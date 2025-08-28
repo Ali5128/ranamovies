@@ -324,12 +324,56 @@ body {
     .movie-card img { height: 250px; }
     .search-box { width: 90%; }
     .admin-box { padding: 20px; margin: 20px; }
+    
+    /* Improved mobile responsiveness */
+    .search-box input {
+        padding: 12px 20px;
+    }
+    
+    .search-box button {
+        padding: 12px 20px;
+    }
+    
+    .movie-title {
+        font-size: 16px;
+    }
+    
+    .movie-meta {
+        font-size: 13px;
+    }
+    
+    .watch-btn {
+        padding: 10px;
+        font-size: 14px;
+    }
 }
 
 /* Loading States */
 .loading { opacity: 0.7; pointer-events: none; }
 .hidden { display: none !important; }
-        </style>
+
+/* Error states for images */
+.movie-thumbnail {
+    position: relative;
+    overflow: hidden;
+}
+
+.movie-thumbnail .error-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    text-align: center;
+    padding: 10px;
+}
+    </style>
 </head>
 <body>
     <!-- Loading Spinner -->
@@ -360,7 +404,7 @@ body {
                 <p class="lead mb-4">Watch and download your favorite movies</p>
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="Search movies...">
-                    <button><i class="fas fa-search"></i> Search</button>
+                    <button id="searchButton"><i class="fas fa-search"></i> Search</button>
                 </div>
             </div>
         </div>
@@ -564,12 +608,12 @@ async function addMovie(event) {
 
 // Display Movies
 function createMovieCard(movie) {
-    // Fix for thumbnail display - ensure proper URL formatting
+    // Fix thumbnail URL handling
     let thumbnailUrl = movie['Thumbnail URL'] || '';
-    // Fix for movie URL - ensure it opens in a new tab
+    // Fix movie URL handling
     let movieUrl = movie['Movie URL'] || '';
     
-    // Make sure the URL has a proper protocol
+    // Ensure URLs have proper protocol
     if (movieUrl && !movieUrl.startsWith('http')) {
         movieUrl = 'https://' + movieUrl;
     }
@@ -577,7 +621,13 @@ function createMovieCard(movie) {
     return `
         <div class="col-lg-3 col-md-4 col-sm-6">
             <div class="movie-card">
-                <img src="${thumbnailUrl}" alt="${movie.Title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=Movie+Thumbnail'">
+                <div class="movie-thumbnail">
+                    <img src="${thumbnailUrl}" alt="${movie.Title}" loading="lazy" 
+                         onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="error-overlay" style="display: none;">
+                        <div>Thumbnail not available</div>
+                    </div>
+                </div>
                 <div class="movie-info">
                     <h3 class="movie-title">${movie.Title}</h3>
                     <div class="movie-meta">
@@ -618,17 +668,30 @@ function displayMovies() {
     }
 }
 
-// Search
-document.getElementById('searchInput').addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    const filtered = movies.filter(movie => 
-        movie.Title.toLowerCase().includes(searchTerm) ||
-        movie.Genre.toLowerCase().includes(searchTerm)
-    );
-    document.getElementById('moviesGrid').innerHTML = 
-        filtered.length ? filtered.map(createMovieCard).join('') 
-                      : '<div class="col-12 text-center text-muted">No results found</div>';
-});
+// Search functionality
+function setupSearch() {
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    
+    // Search on input
+    searchInput.addEventListener('input', performSearch);
+    
+    // Also search on button click
+    searchButton.addEventListener('click', performSearch);
+    
+    function performSearch() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filtered = movies.filter(movie => 
+            movie.Title.toLowerCase().includes(searchTerm) ||
+            movie.Genre.toLowerCase().includes(searchTerm) ||
+            movie.Description.toLowerCase().includes(searchTerm)
+        );
+        
+        document.getElementById('moviesGrid').innerHTML = 
+            filtered.length ? filtered.map(createMovieCard).join('') 
+                          : '<div class="col-12 text-center text-muted">No results found</div>';
+    }
+}
 
 // Admin Functions
 function login() {
@@ -694,7 +757,11 @@ function checkRoute() {
     const isAdmin = window.location.hash === '#admin';
     document.getElementById('mainSection').style.display = isAdmin ? 'none' : 'block';
     document.getElementById('adminSection').style.display = isAdmin ? 'block' : 'none';
-    if (!isAdmin) fetchMovies();
+    if (!isAdmin) {
+        fetchMovies();
+        // Setup search after movies are loaded
+        setTimeout(setupSearch, 500);
+    }
 }
 
 // Initialize
