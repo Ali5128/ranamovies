@@ -537,6 +537,17 @@ body {
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // Add this at the start of your JavaScript (right after <script>)
+// Check for admin route immediately
+if (window.location.hash === '#admin') {
+    document.getElementById('mainSection').style.display = 'none';
+    document.getElementById('adminSection').style.display = 'block';
+} else {
+    document.getElementById('mainSection').style.display = 'block';
+    document.getElementById('adminSection').style.display = 'none';
+}
+
+// Rest of your JavaScript remains the same
 // Admin Credentials
 const ADMIN_CREDENTIALS = {
     username: 'Jello',
@@ -737,4 +748,5 @@ window.addEventListener('load', hideLoader);
 </body>
 </html>
  
+
 
