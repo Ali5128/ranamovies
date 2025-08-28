@@ -9,6 +9,21 @@
     <meta name="description" content="Watch and download your favorite movies for free on RanaMovies. Latest releases, HD quality, fast streaming.">
     <meta name="keywords" content="movies, download movies, watch movies, free movies, latest movies, HD movies">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="canonical" href="https://ranamovies.com/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ranamovies.com/">
+    <meta property="og:title" content="RanaMovies - Watch & Download Latest Movies">
+    <meta property="og:description" content="Watch and download your favorite movies for free on RanaMovies. Latest releases, HD quality, fast streaming.">
+    <meta property="og:image" content="https://assets.nflxext.com/ffe/siteui/vlv3/f669a8f4-de1e-49d7-bb56-c9bd1f4a9069/d4f217b2-4001-4df5-b363-27a31d9a9b99/US-en-20221031-popsignuptwoweeks-perspective_alpha_website_large.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://ranamovies.com/">
+    <meta property="twitter:title" content="RanaMovies - Watch & Download Latest Movies">
+    <meta property="twitter:description" content="Watch and download your favorite movies for free on RanaMovies. Latest releases, HD quality, fast streaming.">
+    <meta property="twitter:image" content="https://assets.nflxext.com/ffe/siteui/vlv3/f669a8f4-de1e-49d7-bb56-c9bd1f4a9069/d4f217b2-4001-4df5-b363-27a31d9a9b99/US-en-20221031-popsignuptwoweeks-perspective_alpha_website_large.jpg">
     
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -597,6 +612,18 @@
             }
         }
 
+        // Fix URL protocol
+        function fixUrlProtocol(url) {
+            if (!url) return '';
+            
+            // Add https:// if no protocol specified
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                return 'https://' + url;
+            }
+            
+            return url;
+        }
+
         // Fetch Movies from Google Sheet
         async function fetchMovies() {
             showLoading();
@@ -660,8 +687,8 @@
             const newMovie = {
                 ID: Date.now(),
                 Title: document.getElementById('movieTitle').value,
-                'Thumbnail URL': document.getElementById('thumbnailUrl').value,
-                'Movie URL': document.getElementById('movieUrl').value,
+                'Thumbnail URL': fixUrlProtocol(document.getElementById('thumbnailUrl').value),
+                'Movie URL': fixUrlProtocol(document.getElementById('movieUrl').value),
                 Genre: document.getElementById('movieGenre').value,
                 Year: document.getElementById('movieYear').value,
                 Description: document.getElementById('movieDescription').value,
@@ -671,6 +698,9 @@
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify(newMovie)
                 });
 
@@ -693,19 +723,17 @@
         function createMovieCard(movie) {
             // Fix thumbnail URL handling
             let thumbnailUrl = movie['Thumbnail URL'] || '';
+            thumbnailUrl = fixUrlProtocol(thumbnailUrl);
+            
             // Fix movie URL handling
             let movieUrl = movie['Movie URL'] || '';
-            
-            // Ensure URLs have proper protocol
-            if (movieUrl && !movieUrl.startsWith('http')) {
-                movieUrl = 'https://' + movieUrl;
-            }
+            movieUrl = fixUrlProtocol(movieUrl);
             
             return `
                 <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="movie-card">
                         <div class="movie-thumbnail">
-                            <img src="${thumbnailUrl}" alt="${movie.Title}" loading="lazy" 
+                            <img src="${thumbnailUrl}" alt="${movie.Title} - ${movie.Genre} movie from ${movie.Year}" loading="lazy" 
                                  onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
                             <div class="error-overlay" style="display: none;">
                                 <div>Thumbnail not available</div>
@@ -748,6 +776,55 @@
             
             if (document.getElementById('dashboard').style.display === 'block') {
                 displayAdminMovies();
+            }
+            
+            // Add structured data for SEO
+            addStructuredData(sortedMovies);
+        }
+
+        // Add structured data for SEO
+        function addStructuredData(movies) {
+            // Remove any existing structured data
+            document.querySelectorAll('script[type="application/ld+json"]').forEach(el => el.remove());
+            
+            // Add website structured data
+            const websiteData = {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "RanaMovies",
+                "url": "https://ranamovies.com/",
+                "description": "Watch and download your favorite movies for free on RanaMovies. Latest releases, HD quality, fast streaming.",
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": {
+                        "@type": "EntryPoint",
+                        "urlTemplate": "https://ranamovies.com/?search={search_term_string}"
+                    },
+                    "query-input": "required name=search_term_string"
+                }
+            };
+            
+            const websiteScript = document.createElement('script');
+            websiteScript.type = 'application/ld+json';
+            websiteScript.textContent = JSON.stringify(websiteData);
+            document.head.appendChild(websiteScript);
+            
+            // Add movie collection structured data
+            if (movies.length > 0) {
+                const movieData = movies.slice(0, 10).map(movie => ({
+                    "@context": "https://schema.org",
+                    "@type": "Movie",
+                    "name": movie.Title,
+                    "description": movie.Description,
+                    "genre": movie.Genre,
+                    "dateCreated": movie.Year,
+                    "image": fixUrlProtocol(movie['Thumbnail URL'])
+                }));
+                
+                const movieScript = document.createElement('script');
+                movieScript.type = 'application/ld+json';
+                movieScript.textContent = JSON.stringify(movieData);
+                document.head.appendChild(movieScript);
             }
         }
 
@@ -828,14 +905,22 @@
             `).join('');
         }
 
-        // Delete Movie
+        // Delete Movie - FIXED VERSION
         async function deleteMovie(movieId) {
             if (!confirm('Are you sure you want to delete this movie?')) return;
             
             showLoading();
             try {
-                const response = await fetch(`${SCRIPT_URL}?id=${movieId}`, {
-                    method: 'DELETE'
+                // Using POST method instead of DELETE to avoid CORS issues
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'delete',
+                        id: movieId
+                    })
                 });
 
                 if (!response.ok) throw new Error('Failed to delete movie');
