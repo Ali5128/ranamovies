@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RanaMovies - Watch & Download Latest Movies</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Watch and download your favorite movies for free on RanaMovies. Latest releases, HD quality, fast streaming.">
+    <meta name="keywords" content="movies, download movies, watch movies, free movies, latest movies, HD movies">
+    <meta name="author" content="RanaMovies">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1101/1101766.png">
+    
+    <!-- External CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Adstera Ads -->
+    <script type='text/javascript' src='//pl27524558.effectivecpmrate.com/71/83/b1/7183b1383f16d7f1a0d405394a2dd75c.js'></script>
+    <script type='text/javascript' src='//pl27524576.effectivecpmrate.com/ca/9c/db/ca9cdb817787e3f562770f4cfc742404.js'></script>
+
+    <style>
+/* Root Variables */
+:root {
+    --primary-color: #e50914;
+    --primary-hover: #f40612;
+    --dark-bg: #141414;
+    --darker-bg: #0b0b0b;
+    --card-bg: #1a1a1a;
+    --text-color: #ffffff;
+    --text-muted: #999999;
+    --gradient: linear-gradient(45deg, #e50914, #ff4b2b);
+}
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Ad Container Styles */
+.ad-container {
+    width: 100%;
+    max-width: 728px;
+    margin: 20px auto;
+    text-align: center;
+    min-height: 90px;
+    padding: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 1;
+}
+
+.ad-container-sticky {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.8);
+    margin: 0;
+    max-width: 100%;
+    z-index: 1000;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid transparent;
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+    padding: 20px 0;
+    transition: 0.3s;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar.scrolled {
+    background: rgba(0,0,0,0.95);
+}
+
+.navbar-brand {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.brand-rana {
+    color: var(--primary-color);
+}
+
+.brand-movies {
+    color: white;
+}
+
+.nav-link {
+    color: white !important;
+    margin: 0 10px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Hero Section */
+.hero {
+    height: 80vh;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                url('https://assets.nflxext.com/ffe/siteui/vlv3/f669a8f4-de1e-49d7-bb56-c9bd1f4a9069/d4f217b2-4001-4df5-b363-27a31d9a9b99/US-en-20221031-popsignuptwoweeks-perspective_alpha_website_large.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-top: 70px;
+}
+
+.hero-content {
+    width: 100%;
+    padding: 20px;
+    animation: fadeIn 1s ease;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+}
+
+/* Search Box */
+.search-box {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 30px 0 0 30px;
+    font-size: 16px;
+    background: rgba(255,255,255,0.9);
+}
+
+.search-box button {
+    padding: 15px 30px;
+    border: none;
+    background: var(--gradient);
+    color: white;
+    border-radius: 0 30px 30px 0;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Movie Cards */
+.movie-card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+}
+
+.movie-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
+}
+
+.movie-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.movie-info {
+    padding: 20px;
+}
+
+.movie-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.movie-meta {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.watch-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--gradient);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.watch-btn:hover {
+    transform: scale(1.05);
+    color: white;
+}
+
+/* Admin Styles */
+.admin-login {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--darker-bg);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.login-box {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.login-box h2 {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    background: var(--dark-bg);
+    border: 1px solid #333;
+    border-radius: 5px;
+    color: white;
+}
+
+/* Dashboard Styles */
+.admin-dashboard {
+    min-height: 100vh;
+    padding: 20px;
+    background: var(--dark-bg);
+}
+
+.dashboard-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.table {
+    color: white;
+}
+
+.thumbnail-preview {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    .hero p {
+        font-size: 1.2rem;
+    }
+    .search-box {
+        width: 90%;
+    }
+    .movie-card img {
+        height: 250px;
+    }
+    .ad-container {
+        margin: 10px auto;
+    }
+}
+
+/* Error Messages */
+.error-message {
+    color: var(--primary-color);
+    text-align: center;
+    margin-top: 10px;
+    display: none;
+}
+
+/* Success Messages */
+.success-message {
+    color: #4CAF50;
+    text-align: center;
+    margin-top: 10px;
+    display: none;
+}
+</style>
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Main Website Section -->
+    <div id="mainSection">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <span class="brand-rana">RANA</span><span class="brand-movies">MOVIES</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-home"></i> Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#movies"><i class="fas fa-film"></i> Movies</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#latest"><i class="fas fa-fire"></i> Latest</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Welcome to RanaMovies</h1>
+                <p>Watch and download your favorite movies</p>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search movies...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Ad Container -->
+        <div class="ad-container">
+            <div id="container-7183b1383f16d7f1a0d405394a2dd75c"></div>
+        </div>
+
+        <!-- Movies Grid -->
+        <section id="movies" class="container py-5">
+            <h2 class="mb-4">All Movies</h2>
+            <div class="row" id="moviesGrid">
+                <!-- Movies will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Middle Ad Container -->
+        <div class="ad-container">
+            <div id="container-ca9cdb817787e3f562770f4cfc742404"></div>
+        </div>
+
+        <!-- Latest Movies -->
+        <section id="latest" class="container py-5">
+            <h2 class="mb-4">Latest Added</h2>
+            <div class="row" id="latestGrid">
+                <!-- Latest movies will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Bottom Ad Container -->
+        <div class="ad-container">
+            <div id="container-7183b1383f16d7f1a0d405394a2dd75c"></div>
+        </div>
+
+        <!-- Sticky Bottom Ad -->
+        <div class="ad-container ad-container-sticky">
+            <div id="container-ca9cdb817787e3f562770f4cfc742404"></div>
+        </div>
+    </div>
+
+    <!-- Admin Section -->
+    <div id="adminSection" style="display: none;">
+        <!-- Login Form -->
+        <div id="loginSection" class="admin-login">
+            <div class="login-container">
+                <div class="login-box">
+                    <h2>RanaMovies Admin</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <input type="text" id="username" placeholder="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="watch-btn">Login</button>
+                        <div id="loginError" class="error-message"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboardSection" class="admin-dashboard" style="display: none;">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Admin Dashboard</h2>
+                    <button id="logoutBtn" class="btn btn-danger">Logout</button>
+                </div>
+
+                <!-- Add Movie Form -->
+                <div class="dashboard-card">
+                    <h3>Add New Movie</h3>
+                    <form id="addMovieForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" id="movieTitle" placeholder="Movie Title" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="url" id="thumbnailUrl" placeholder="Thumbnail URL" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input type="url" id="movieUrl" placeholder="Movie URL (Direct Link)" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="text" id="movieGenre" placeholder="Genre" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="number" id="movieYear" placeholder="Year" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <input type="text" id="movieDuration" placeholder="Duration (e.g., 2h 30min)" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="movieDescription" placeholder="Movie Description" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="watch-btn">Add Movie</button>
+                    </form>
+                </div>
+
+                <!-- Movies List -->
+                <div class="dashboard-card">
+                    <h3>Manage Movies</h3>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Thumbnail</th>
+                                    <th>Title</th>
+                                    <th>Genre</th>
+                                    <th>Year</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="moviesList">
+                                <!-- Movies will be listed here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Admin Credentials
+const ADMIN_CREDENTIALS = {
+    username: 'Jello',
+    password: 'AliHaider5128@.com'
+};
+
+// Initialize movies array from localStorage
+let movies = JSON.parse(localStorage.getItem('movies')) || [];
+
+// Loading Spinner Functions
+function showLoader() {
+    document.getElementById('loadingSpinner').style.display = 'flex';
+}
+
+function hideLoader() {
+    document.getElementById('loadingSpinner').style.display = 'none';
+}
+
+// Route Handler
+function handleRoutes() {
+    const mainSection = document.getElementById('mainSection');
+    const adminSection = document.getElementById('adminSection');
+    
+    if (window.location.hash === '#admin') {
+        mainSection.style.display = 'none';
+        adminSection.style.display = 'block';
+        checkLoginStatus();
+    } else {
+        mainSection.style.display = 'block';
+        adminSection.style.display = 'none';
+        displayMovies();
+    }
+}
+
+// Display Movies on Main Page
+function displayMovies() {
+    const moviesGrid = document.getElementById('moviesGrid');
+    const latestGrid = document.getElementById('latestGrid');
+    
+    if (!movies.length) {
+        const noMoviesMsg = `
+            <div class="col-12 text-center">
+                <h3>No movies available yet</h3>
+            </div>`;
+        moviesGrid.innerHTML = noMoviesMsg;
+        latestGrid.innerHTML = noMoviesMsg;
+        return;
+    }
+
+    // Sort movies by date for latest section
+    const sortedMovies = [...movies].sort((a, b) => b.dateAdded - a.dateAdded);
+
+    // Create movie cards
+    const createMovieCard = (movie) => `
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="movie-card">
+                <img src="${movie.thumbnail}" alt="${movie.title}" onerror="this.src='https://via.placeholder.com/300x450?text=Movie'">
+                <div class="movie-info">
+                    <h3 class="movie-title">${movie.title}</h3>
+                    <div class="movie-meta">
+                        <span><i class="fas fa-calendar"></i> ${movie.year}</span> • 
+                        <span><i class="fas fa-film"></i> ${movie.genre}</span>
+                    </div>
+                    <p class="mt-2">${movie.description.substring(0, 100)}...</p>
+                    <a href="${movie.movieUrl}" target="_blank" class="watch-btn">
+                        <i class="fas fa-play"></i> Watch Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    `;
+
+    moviesGrid.innerHTML = movies.map(createMovieCard).join('');
+    latestGrid.innerHTML = sortedMovies.slice(0, 4).map(createMovieCard).join('');
+}
+
+// Search Functionality
+document.getElementById('searchInput')?.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const filteredMovies = movies.filter(movie => 
+        movie.title.toLowerCase().includes(searchTerm) || 
+        movie.genre.toLowerCase().includes(searchTerm)
+    );
+    
+    document.getElementById('moviesGrid').innerHTML = filteredMovies.map(movie => createMovieCard(movie)).join('');
+});
+
+// Admin Functions
+function checkLoginStatus() {
+    const isLoggedIn = localStorage.getItem('adminLoggedIn');
+    document.getElementById('loginSection').style.display = isLoggedIn ? 'none' : 'flex';
+    document.getElementById('dashboardSection').style.display = isLoggedIn ? 'block' : 'none';
+    
+    if (isLoggedIn) {
+        displayAdminMovies();
+    }
+}
+
+// Handle Login
+document.getElementById('loginForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+        localStorage.setItem('adminLoggedIn', 'true');
+        checkLoginStatus();
+    } else {
+        document.getElementById('loginError').style.display = 'block';
+        document.getElementById('loginError').textContent = 'Invalid credentials';
+    }
+});
+
+// Handle Logout
+document.getElementById('logoutBtn')?.addEventListener('click', () => {
+    localStorage.removeItem('adminLoggedIn');
+    window.location.hash = '';
+    handleRoutes();
+});
+
+// Add Movie
+document.getElementById('addMovieForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const newMovie = {
+        id: Date.now(),
+        title: document.getElementById('movieTitle').value,
+        thumbnail: document.getElementById('thumbnailUrl').value,
+        movieUrl: document.getElementById('movieUrl').value,
+        genre: document.getElementById('movieGenre').value,
+        year: document.getElementById('movieYear').value,
+        duration: document.getElementById('movieDuration').value,
+        description: document.getElementById('movieDescription').value,
+        dateAdded: Date.now()
+    };
+
+    movies.push(newMovie);
+    localStorage.setItem('movies', JSON.stringify(movies));
+    document.getElementById('addMovieForm').reset();
+    displayAdminMovies();
+    alert('Movie added successfully!');
+});
+
+// Display Movies in Admin Dashboard
+function displayAdminMovies() {
+    const moviesList = document.getElementById('moviesList');
+    if (!moviesList) return;
+
+    moviesList.innerHTML = movies.map(movie => `
+        <tr>
+            <td><img src="${movie.thumbnail}" class="thumbnail-preview" alt="${movie.title}"></td>
+            <td>${movie.title}</td>
+            <td>${movie.genre}</td>
+            <td>${movie.year}</td>
+            <td>
+                <button onclick="deleteMovie(${movie.id})" class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Delete Movie
+window.deleteMovie = function(movieId) {
+    if (confirm('Are you sure you want to delete this movie?')) {
+        movies = movies.filter(movie => movie.id !== movieId);
+        localStorage.setItem('movies', JSON.stringify(movies));
+        displayAdminMovies();
+    }
+};
+
+// Initialize
+window.addEventListener('load', handleRoutes);
+window.addEventListener('hashchange', handleRoutes);
+
+// Navbar Scroll Effect
+window.addEventListener('scroll', () => {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// Hide loader when page is ready
+window.addEventListener('load', hideLoader);
+</script>
+</body>
+</html>
+ 
