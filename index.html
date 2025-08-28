@@ -560,16 +560,24 @@ function handleRoutes() {
     const mainSection = document.getElementById('mainSection');
     const adminSection = document.getElementById('adminSection');
     
+    console.log('Current hash:', window.location.hash); // For debugging
+    
     if (window.location.hash === '#admin') {
+        console.log('Showing admin section'); // For debugging
         mainSection.style.display = 'none';
         adminSection.style.display = 'block';
         checkLoginStatus();
     } else {
+        console.log('Showing main section'); // For debugging
         mainSection.style.display = 'block';
         adminSection.style.display = 'none';
         displayMovies();
     }
 }
+
+// Make sure these event listeners are present
+window.addEventListener('load', handleRoutes);
+window.addEventListener('hashchange', handleRoutes);
 
 // Display Movies on Main Page
 function displayMovies() {
@@ -729,3 +737,4 @@ window.addEventListener('load', hideLoader);
 </body>
 </html>
  
+
