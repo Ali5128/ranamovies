@@ -11,9 +11,10 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
     
-    <!-- Minimal CSS -->
+    <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- Ads -->
     <script async src='//pl27524558.effectivecpmrate.com/71/83/b1/7183b1383f16d7f1a0d405394a2dd75c.js'></script>
@@ -129,6 +130,7 @@ body {
 
 .movie-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
 }
 
 .movie-card img {
@@ -200,6 +202,21 @@ body {
     border-color: var(--primary) !important;
 }
 
+/* Admin Dashboard */
+.dashboard-content {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.movie-list-item {
+    background: rgba(0,0,0,0.2);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
 /* Ad Containers */
 .ad-container {
     max-width: 728px;
@@ -211,6 +228,23 @@ body {
     text-align: center;
 }
 
+/* Messages */
+.success-message {
+    color: #4CAF50;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    display: none;
+}
+
+.error-message {
+    color: #f44336;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    display: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .hero { height: 60vh; }
@@ -218,7 +252,7 @@ body {
     .search-box { width: 90%; }
 }
 
-/* Loading States */
+/* States */
 .loading { opacity: 0.7; pointer-events: none; }
 .hidden { display: none !important; }
         </style>
@@ -274,6 +308,11 @@ body {
             <h2 class="h4 mb-4">All Movies</h2>
             <div class="row" id="moviesGrid"></div>
         </section>
+
+        <!-- Bottom Ad -->
+        <div class="ad-container">
+            <div id="container-7183b1383f16d7f1a0d405394a2dd75c"></div>
+        </div>
     </div>
 
     <!-- Admin Section -->
@@ -292,7 +331,7 @@ body {
                     <div id="loginError" class="text-danger small mt-2"></div>
                 </form>
 
-                <!-- Admin Dashboard (Hidden until login) -->
+                <!-- Admin Dashboard -->
                 <div id="dashboardContent" class="hidden">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4>Dashboard</h4>
@@ -321,156 +360,266 @@ body {
                             <textarea class="form-control" id="movieDescription" rows="3" placeholder="Description" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-danger w-100">Add Movie</button>
+                        <div id="uploadStatus" class="mt-2"></div>
                     </form>
 
                     <hr class="my-4">
                     <h5>Manage Movies</h5>
-                    <div id="moviesList"></div>
+                    <div id="moviesList" class="mt-3"></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Success Message -->
+    <div id="successMessage" class="success-message"></div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" class="error-message"></div>
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-// Simple Configuration
-const GITHUB_CONFIG = {
-    username: 'Ali5128',
-    repo: 'ranamovies',
-    branch: 'main'
-};
+    // Configuration
+    const GITHUB_CONFIG = {
+        owner: 'Ali5128',
+        repo: 'ranamovies',
+        path: 'movies.json'
+    };
 
-const ADMIN_CREDENTIALS = {
-    username: 'Jello',
-    password: 'AliHaider5128@.com'
-};
+    const ADMIN_CREDENTIALS = {
+        username: 'Jello',
+        password: 'AliHaider5128@.com'
+    };
 
-// State
-let movies = [];
+    // State
+    let movies = [];
 
-// Helpers
-function showLoader() {
-    document.getElementById('loadingSpinner').style.display = 'flex';
-}
-
-function hideLoader() {
-    document.getElementById('loadingSpinner').style.display = 'none';
-}
-
-// Fetch Movies
-async function fetchMovies() {
-    showLoader();
-    try {
-        const response = await fetch(`https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/movies.json`);
-        const data = await response.json();
-        movies = data.movies || [];
-        displayMovies();
-    } catch (error) {
-        console.error('Error:', error);
+    // Helpers
+    function showLoader() {
+        document.getElementById('loadingSpinner').style.display = 'flex';
     }
-    hideLoader();
-}
 
-// Display Movies
-function createMovieCard(movie) {
-    return `
-        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-            <div class="movie-card">
-                <img src="${movie.thumbnail}" alt="${movie.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=Movie'">
-                <div class="movie-info">
-                    <h3 class="movie-title">${movie.title}</h3>
-                    <div class="movie-meta">
-                        <span>${movie.year}</span> • 
-                        <span>${movie.genre}</span>
+    function hideLoader() {
+        document.getElementById('loadingSpinner').style.display = 'none';
+    }
+
+    function showMessage(message, isError = false) {
+        const element = document.getElementById(isError ? 'errorMessage' : 'successMessage');
+        element.textContent = message;
+        element.style.display = 'block';
+        setTimeout(() => element.style.display = 'none', 3000);
+    }
+
+    // Fetch Movies
+    async function fetchMovies() {
+        showLoader();
+        try {
+            const response = await fetch(`https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/main/${GITHUB_CONFIG.path}`);
+            if (!response.ok) throw new Error('Failed to fetch movies');
+            const data = await response.json();
+            movies = data.movies || [];
+            displayMovies();
+        } catch (error) {
+            console.error('Error:', error);
+            showMessage('Failed to load movies', true);
+        }
+        hideLoader();
+    }
+
+    // Save Movies
+    async function saveMovies(updatedMovies) {
+        showLoader();
+        try {
+            // Get current file info
+            const infoResponse = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`);
+            const fileInfo = await infoResponse.json();
+
+            // Prepare update
+            const content = btoa(JSON.stringify({ movies: updatedMovies }, null, 2));
+
+            // Update file using repository secret
+            const updateResponse = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json',
+                    'X-GitHub-Api-Version': '2022-11-28'
+                },
+                body: JSON.stringify({
+                    message: 'Update movies via admin panel',
+                    content: content,
+                    sha: fileInfo.sha
+                })
+            });
+
+            if (!updateResponse.ok) throw new Error('Failed to save changes');
+
+            movies = updatedMovies;
+            displayMovies();
+            return true;
+        } catch (error) {
+            console.error('Error:', error);
+            showMessage('Failed to save changes', true);
+            return false;
+        } finally {
+            hideLoader();
+        }
+    }
+
+    // Display Movies
+    function createMovieCard(movie) {
+        return `
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="movie-card">
+                    <img src="${movie.thumbnail}" alt="${movie.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=Movie'">
+                    <div class="movie-info">
+                        <h3 class="movie-title">${movie.title}</h3>
+                        <div class="movie-meta">
+                            <span>${movie.year}</span> • 
+                            <span>${movie.genre}</span>
+                        </div>
+                        <p class="movie-meta">${movie.description?.substring(0, 100)}...</p>
+                        <a href="${movie.movieUrl}" target="_blank" class="watch-btn">
+                            Watch Now
+                        </a>
                     </div>
-                    <p class="movie-meta">${movie.description?.substring(0, 100)}...</p>
-                    <a href="${movie.movieUrl}" target="_blank" class="watch-btn">
-                        Watch Now
-                    </a>
                 </div>
             </div>
-        </div>
-    `;
-}
-
-function displayMovies() {
-    const moviesGrid = document.getElementById('moviesGrid');
-    const latestGrid = document.getElementById('latestGrid');
-    
-    if (!movies.length) {
-        const noMoviesMsg = '<div class="col-12 text-center text-muted">No movies available</div>';
-        moviesGrid.innerHTML = noMoviesMsg;
-        latestGrid.innerHTML = noMoviesMsg;
-        return;
+        `;
     }
 
-    // Sort by date for latest
-    const sortedMovies = [...movies].sort((a, b) => b.dateAdded - a.dateAdded);
-    
-    moviesGrid.innerHTML = movies.map(createMovieCard).join('');
-    latestGrid.innerHTML = sortedMovies.slice(0, 4).map(createMovieCard).join('');
-}
+    function displayMovies() {
+        const moviesGrid = document.getElementById('moviesGrid');
+        const latestGrid = document.getElementById('latestGrid');
+        
+        if (!movies.length) {
+            const noMoviesMsg = '<div class="col-12 text-center text-muted">No movies available</div>';
+            moviesGrid.innerHTML = noMoviesMsg;
+            latestGrid.innerHTML = noMoviesMsg;
+            return;
+        }
 
-// Search
-document.getElementById('searchInput').addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    const filtered = movies.filter(movie => 
-        movie.title.toLowerCase().includes(searchTerm) ||
-        movie.genre.toLowerCase().includes(searchTerm)
-    );
-    document.getElementById('moviesGrid').innerHTML = 
-        filtered.length ? filtered.map(createMovieCard).join('') 
-                      : '<div class="col-12 text-center text-muted">No results found</div>';
-});
-
-// Admin Functions
-function showAdminDashboard(show) {
-    document.getElementById('loginForm').style.display = show ? 'none' : 'block';
-    document.getElementById('dashboardContent').style.display = show ? 'block' : 'none';
-}
-
-document.getElementById('loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-        showAdminDashboard(true);
-        document.getElementById('loginError').textContent = '';
-    } else {
-        document.getElementById('loginError').textContent = 'Invalid credentials';
+        // Sort by date for latest
+        const sortedMovies = [...movies].sort((a, b) => b.dateAdded - a.dateAdded);
+        
+        moviesGrid.innerHTML = movies.map(createMovieCard).join('');
+        latestGrid.innerHTML = sortedMovies.slice(0, 4).map(createMovieCard).join('');
+        
+        // Update admin movie list if on admin page
+        if (document.getElementById('moviesList').style.display !== 'none') {
+            displayAdminMovies();
+        }
     }
-});
 
-document.getElementById('logoutBtn').addEventListener('click', () => {
-    showAdminDashboard(false);
-    window.location.hash = '';
-});
+    // Search
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filtered = movies.filter(movie => 
+            movie.title.toLowerCase().includes(searchTerm) ||
+            movie.genre.toLowerCase().includes(searchTerm)
+        );
+        document.getElementById('moviesGrid').innerHTML = 
+            filtered.length ? filtered.map(createMovieCard).join('') 
+                          : '<div class="col-12 text-center text-muted">No results found</div>';
+    });
 
-// Route Handler
-function handleRoute() {
-    const isAdmin = window.location.hash === '#admin';
-    document.getElementById('mainSection').style.display = isAdmin ? 'none' : 'block';
-    document.getElementById('adminSection').style.display = isAdmin ? 'block' : 'none';
-}
-
-// Initialize
-window.addEventListener('load', () => {
-    handleRoute();
-    fetchMovies();
-});
-
-window.addEventListener('hashchange', handleRoute);
-
-// Navbar Scroll Effect
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
+    // Admin Functions
+    function showAdminDashboard(show) {
+        document.getElementById('loginForm').style.display = show ? 'none' : 'block';
+        document.getElementById('dashboardContent').style.display = show ? 'block' : 'none';
     }
-});
-</script>
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+            showAdminDashboard(true);
+            document.getElementById('loginError').textContent = '';
+            fetchMovies();
+        } else {
+            document.getElementById('loginError').textContent = 'Invalid credentials';
+        }
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        showAdminDashboard(false);
+        window.location.hash = '';
+    });
+
+    // Add Movie
+    document.getElementById('addMovieForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const newMovie = {
+            id: Date.now(),
+            title: document.getElementById('movieTitle').value,
+            thumbnail: document.getElementById('thumbnailUrl').value,
+            movieUrl: document.getElementById('movieUrl').value,
+            genre: document.getElementById('movieGenre').value,
+            year: document.getElementById('movieYear').value,
+            description: document.getElementById('movieDescription').value,
+            dateAdded: Date.now()
+        };
+
+        const success = await saveMovies([...movies, newMovie]);
+        if (success) {
+            e.target.reset();
+            showMessage('Movie added successfully!');
+        }
+    });
+
+    // Display Admin Movies List
+    function displayAdminMovies() {
+        const moviesList = document.getElementById('moviesList');
+        moviesList.innerHTML = movies.map(movie => `
+            <div class="movie-list-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${movie.title}</strong>
+                        <small class="text-muted ms-2">${movie.genre} • ${movie.year}</small>
+                    </div>
+                    <button onclick="deleteMovie(${movie.id})" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Delete Movie
+    window.deleteMovie = async function(movieId) {
+        if (!confirm('Are you sure you want to delete this movie?')) return;
+        
+        const updatedMovies = movies.filter(movie => movie.id !== movieId);
+        const success = await saveMovies(updatedMovies);
+        if (success) {
+            showMessage('Movie deleted successfully!');
+        }
+    };
+
+    // Route Handler
+    function handleRoute() {
+        const isAdmin = window.location.hash === '#admin';
+        document.getElementById('mainSection').style.display = isAdmin ? 'none' : 'block';
+        document.getElementById('adminSection').style.display = isAdmin ? 'block' : 'none';
+        if (!isAdmin) fetchMovies();
+    }
+
+    // Initialize
+    window.addEventListener('load', handleRoute);
+    window.addEventListener('hashchange', handleRoute);
+
+    // Navbar Scroll Effect
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+    </script>
 </body>
 </html>
