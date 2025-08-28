@@ -20,7 +20,7 @@
     <script async src='//pl27524576.effectivecpmrate.com/ca/9c/db/ca9cdb817787e3f562770f4cfc742404.js'></script>
 
     <style>
-       /* Root Variables */
+        /* Root Variables */
 :root {
     --primary: #e50914;
     --primary-hover: #ff0f1f;
@@ -307,7 +307,7 @@ body {
 /* Loading States */
 .loading { opacity: 0.7; pointer-events: none; }
 .hidden { display: none !important; }
-</style>
+        </style>
 </head>
 <body>
     <!-- Loading Spinner -->
@@ -431,175 +431,240 @@ body {
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    // Configuration
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTTnc7FSp4gNwKdSYrPfJt99-Va62_Yj2e5AgOuhUX5RUuEg0vrLrVtHJ6FQDebZeTHx0zaXF1KHTbO/pub?gid=0&single=true&output=csv';
-    
-    const ADMIN = {
-        username: 'Jello',
-        password: 'AliHaider5128@.com'
+// Configuration
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTTnc7FSp4gNwKdSYrPfJt99-Va62_Yj2e5AgOuhUX5RUuEg0vrLrVtHJ6FQDebZeTHx0zaXF1KHTbO/pub?gid=0&single=true&output=csv';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx6SDnLAU5Fssh6mgAjZuv9FXZPKhyOGEcr39Ckr3NLyyOb_v-QKoRi2Ym2WVJOcH6s/exec';
+
+const ADMIN = {
+    username: 'Jello',
+    password: 'AliHaider5128@.com'
+};
+
+// State
+let movies = [];
+
+// Show/Hide Loading
+function showLoading() {
+    document.getElementById('loadingSpinner').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loadingSpinner').style.display = 'none';
+}
+
+// Show Alert Message
+function showAlert(message, isError = false) {
+    const alert = document.getElementById(isError ? 'errorAlert' : 'successAlert');
+    alert.textContent = message;
+    alert.className = `alert ${isError ? 'alert-danger' : 'alert-success'}`;
+    alert.style.display = 'block';
+    setTimeout(() => alert.style.display = 'none', 3000);
+}
+
+// Fetch Movies from Google Sheet
+async function fetchMovies() {
+    showLoading();
+    try {
+        const response = await fetch(SHEET_URL);
+        const csv = await response.text();
+        movies = parseCSV(csv);
+        displayMovies();
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Failed to load movies', true);
+    }
+    hideLoading();
+}
+
+// Parse CSV Data
+function parseCSV(csv) {
+    const lines = csv.split('\n');
+    const headers = lines[0].split(',');
+    return lines.slice(1).filter(line => line.trim()).map(line => {
+        const values = line.split(',');
+        const movie = {};
+        headers.forEach((header, i) => {
+            movie[header.trim()] = values[i]?.trim() || '';
+        });
+        return movie;
+    });
+}
+
+// Add Movie to Google Sheet
+async function addMovie(event) {
+    event.preventDefault();
+    showLoading();
+
+    const newMovie = {
+        ID: Date.now(),
+        Title: document.getElementById('movieTitle').value,
+        'Thumbnail URL': document.getElementById('thumbnailUrl').value,
+        'Movie URL': document.getElementById('movieUrl').value,
+        Genre: document.getElementById('movieGenre').value,
+        Year: document.getElementById('movieYear').value,
+        Description: document.getElementById('movieDescription').value,
+        'Date Added': new Date().toISOString()
     };
 
-    // State
-    let movies = [];
-
-    // Show/Hide Loading
-    function showLoading() {
-        document.getElementById('loadingSpinner').style.display = 'flex';
-    }
-
-    function hideLoading() {
-        document.getElementById('loadingSpinner').style.display = 'none';
-    }
-
-    // Show Alert Message
-    function showAlert(message, isError = false) {
-        const alert = document.getElementById(isError ? 'errorAlert' : 'successAlert');
-        alert.textContent = message;
-        alert.style.display = 'block';
-        setTimeout(() => alert.style.display = 'none', 3000);
-    }
-
-    // Parse CSV Data
-    function parseCSV(csv) {
-        const lines = csv.split('\n');
-        const headers = lines[0].split(',');
-        return lines.slice(1).map(line => {
-            const values = line.split(',');
-            const movie = {};
-            headers.forEach((header, i) => {
-                movie[header.trim()] = values[i]?.trim() || '';
-            });
-            return movie;
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(newMovie)
         });
+
+        if (!response.ok) throw new Error('Failed to add movie');
+
+        // Clear form and refresh movies
+        document.getElementById('addMovieForm').reset();
+        showAlert('Movie added successfully!');
+        await fetchMovies();
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Failed to add movie: ' + error.message, true);
     }
 
-    // Fetch Movies from Google Sheet
-    async function fetchMovies() {
-        showLoading();
-        try {
-            const response = await fetch(SHEET_URL);
-            const csv = await response.text();
-            movies = parseCSV(csv);
-            displayMovies();
-        } catch (error) {
-            console.error('Error:', error);
-            showAlert('Failed to load movies', true);
-        }
-        hideLoading();
-    }
+    hideLoading();
+    return false;
+}
 
-    // Display Movies
-    function createMovieCard(movie) {
-        return `
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="movie-card">
-                    <img src="${movie['Thumbnail URL']}" alt="${movie.Title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=Movie'">
-                    <div class="movie-info">
-                        <h3 class="movie-title">${movie.Title}</h3>
-                        <div class="movie-meta">
-                            <span>${movie.Year}</span> • 
-                            <span>${movie.Genre}</span>
-                        </div>
-                        <p class="movie-meta">${movie.Description?.substring(0, 100)}...</p>
-                        <a href="${movie['Movie URL']}" target="_blank" class="watch-btn">
-                            <i class="fas fa-play"></i> Watch Now
-                        </a>
+// Display Movies
+function createMovieCard(movie) {
+    return `
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="movie-card">
+                <img src="${movie['Thumbnail URL']}" alt="${movie.Title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=Movie'">
+                <div class="movie-info">
+                    <h3 class="movie-title">${movie.Title}</h3>
+                    <div class="movie-meta">
+                        <span>${movie.Year}</span> • 
+                        <span>${movie.Genre}</span>
                     </div>
+                    <p class="movie-meta">${movie.Description?.substring(0, 100)}...</p>
+                    <a href="${movie['Movie URL']}" target="_blank" class="watch-btn">
+                        <i class="fas fa-play"></i> Watch Now
+                    </a>
                 </div>
             </div>
-        `;
+        </div>
+    `;
+}
+
+function displayMovies() {
+    const moviesGrid = document.getElementById('moviesGrid');
+    const latestGrid = document.getElementById('latestGrid');
+    
+    if (!movies.length) {
+        const noMoviesMsg = '<div class="col-12 text-center text-muted">No movies available</div>';
+        moviesGrid.innerHTML = noMoviesMsg;
+        latestGrid.innerHTML = noMoviesMsg;
+        return;
     }
 
-    function displayMovies() {
-        const moviesGrid = document.getElementById('moviesGrid');
-        const latestGrid = document.getElementById('latestGrid');
-        
-        if (!movies.length) {
-            const noMoviesMsg = '<div class="col-12 text-center text-muted">No movies available</div>';
-            moviesGrid.innerHTML = noMoviesMsg;
-            latestGrid.innerHTML = noMoviesMsg;
-            return;
-        }
-
-        moviesGrid.innerHTML = movies.map(createMovieCard).join('');
-        latestGrid.innerHTML = movies.slice(0, 4).map(createMovieCard).join('');
-        
-        if (document.getElementById('dashboard').style.display === 'block') {
-            displayAdminMovies();
-        }
+    // Sort by date for latest
+    const sortedMovies = [...movies].sort((a, b) => 
+        new Date(b['Date Added']) - new Date(a['Date Added'])
+    );
+    
+    moviesGrid.innerHTML = movies.map(createMovieCard).join('');
+    latestGrid.innerHTML = sortedMovies.slice(0, 4).map(createMovieCard).join('');
+    
+    if (document.getElementById('dashboard').style.display === 'block') {
+        displayAdminMovies();
     }
+}
 
-    // Search
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const filtered = movies.filter(movie => 
-            movie.Title.toLowerCase().includes(searchTerm) ||
-            movie.Genre.toLowerCase().includes(searchTerm)
-        );
-        document.getElementById('moviesGrid').innerHTML = 
-            filtered.length ? filtered.map(createMovieCard).join('') 
-                          : '<div class="col-12 text-center text-muted">No results found</div>';
-    });
+// Search
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const filtered = movies.filter(movie => 
+        movie.Title.toLowerCase().includes(searchTerm) ||
+        movie.Genre.toLowerCase().includes(searchTerm)
+    );
+    document.getElementById('moviesGrid').innerHTML = 
+        filtered.length ? filtered.map(createMovieCard).join('') 
+                      : '<div class="col-12 text-center text-muted">No results found</div>';
+});
 
-    // Admin Functions
-    function login() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        
-        if (username === ADMIN.username && password === ADMIN.password) {
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            document.getElementById('loginError').textContent = '';
-            fetchMovies();
-        } else {
-            document.getElementById('loginError').textContent = 'Invalid credentials';
-        }
+// Admin Functions
+function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    if (username === ADMIN.username && password === ADMIN.password) {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('loginError').textContent = '';
+        fetchMovies();
+    } else {
+        document.getElementById('loginError').textContent = 'Invalid credentials';
     }
+}
 
-    function logout() {
-        document.getElementById('loginForm').style.display = 'block';
-        document.getElementById('dashboard').style.display = 'none';
-        window.location.hash = '';
-        checkRoute();
-    }
+function logout() {
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('dashboard').style.display = 'none';
+    window.location.hash = '';
+    checkRoute();
+}
 
-    // Display Admin Movies
-    function displayAdminMovies() {
-        const moviesList = document.getElementById('moviesList');
-        moviesList.innerHTML = movies.map(movie => `
-            <div class="movie-list-item">
-                <div>
-                    <div class="title">${movie.Title}</div>
-                    <div class="meta">${movie.Genre} • ${movie.Year}</div>
-                </div>
-                <button onclick="deleteMovie('${movie.ID}')" class="btn btn-danger btn-sm">
-                    <i class="fas fa-trash"></i>
-                </button>
+// Display Admin Movies
+function displayAdminMovies() {
+    const moviesList = document.getElementById('moviesList');
+    moviesList.innerHTML = movies.map(movie => `
+        <div class="movie-list-item">
+            <div>
+                <div class="title">${movie.Title}</div>
+                <div class="meta">${movie.Genre} • ${movie.Year}</div>
             </div>
-        `).join('');
+            <button onclick="deleteMovie('${movie.ID}')" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `).join('');
+}
+
+// Delete Movie
+async function deleteMovie(movieId) {
+    if (!confirm('Are you sure you want to delete this movie?')) return;
+    
+    showLoading();
+    try {
+        const response = await fetch(`${SCRIPT_URL}?id=${movieId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) throw new Error('Failed to delete movie');
+
+        showAlert('Movie deleted successfully!');
+        await fetchMovies();
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Failed to delete movie: ' + error.message, true);
     }
+    hideLoading();
+}
 
-    // Route Handler
-    function checkRoute() {
-        const isAdmin = window.location.hash === '#admin';
-        document.getElementById('mainSection').style.display = isAdmin ? 'none' : 'block';
-        document.getElementById('adminSection').style.display = isAdmin ? 'block' : 'none';
-        if (!isAdmin) fetchMovies();
+// Route Handler
+function checkRoute() {
+    const isAdmin = window.location.hash === '#admin';
+    document.getElementById('mainSection').style.display = isAdmin ? 'none' : 'block';
+    document.getElementById('adminSection').style.display = isAdmin ? 'block' : 'none';
+    if (!isAdmin) fetchMovies();
+}
+
+// Initialize
+window.addEventListener('load', checkRoute);
+window.addEventListener('hashchange', checkRoute);
+
+// Navbar Scroll Effect
+window.addEventListener('scroll', () => {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
     }
-
-    // Initialize
-    window.addEventListener('load', checkRoute);
-    window.addEventListener('hashchange', checkRoute);
-
-    // Navbar Scroll Effect
-    window.addEventListener('scroll', () => {
-        const navbar = document.querySelector('.navbar');
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-    });
-    </script>
+});
+</script>
 </body>
 </html>
