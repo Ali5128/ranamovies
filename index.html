@@ -564,10 +564,20 @@ async function addMovie(event) {
 
 // Display Movies
 function createMovieCard(movie) {
+    // Fix for thumbnail display - ensure proper URL formatting
+    let thumbnailUrl = movie['Thumbnail URL'] || '';
+    // Fix for movie URL - ensure it opens in a new tab
+    let movieUrl = movie['Movie URL'] || '';
+    
+    // Make sure the URL has a proper protocol
+    if (movieUrl && !movieUrl.startsWith('http')) {
+        movieUrl = 'https://' + movieUrl;
+    }
+    
     return `
         <div class="col-lg-3 col-md-4 col-sm-6">
             <div class="movie-card">
-                <img src="${movie['Thumbnail URL']}" alt="${movie.Title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=Movie'">
+                <img src="${thumbnailUrl}" alt="${movie.Title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450?text=Movie+Thumbnail'">
                 <div class="movie-info">
                     <h3 class="movie-title">${movie.Title}</h3>
                     <div class="movie-meta">
@@ -575,7 +585,7 @@ function createMovieCard(movie) {
                         <span>${movie.Genre}</span>
                     </div>
                     <p class="movie-meta">${movie.Description?.substring(0, 100)}...</p>
-                    <a href="${movie['Movie URL']}" target="_blank" rel="noopener" class="watch-btn" onclick="window.open(this.href); return false;">
+                    <a href="${movieUrl}" target="_blank" rel="noopener" class="watch-btn">
                         <i class="fas fa-play"></i> Watch Now
                     </a>
                 </div>
