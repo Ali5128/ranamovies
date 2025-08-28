@@ -8,6 +8,9 @@
     <!-- SEO & Speed -->
     <meta name="description" content="Watch and download your favorite movies for free on RanaMovies. Latest releases, HD quality, fast streaming.">
     <meta name="keywords" content="movies, download movies, watch movies, free movies, latest movies, HD movies">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+    <link rel="preconnect" href="https://api.github.com" crossorigin>
     
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,8 +21,7 @@
     <script async src='//pl27524558.effectivecpmrate.com/71/83/b1/7183b1383f16d7f1a0d405394a2dd75c.js'></script>
     <script async src='//pl27524576.effectivecpmrate.com/ca/9c/db/ca9cdb817787e3f562770f4cfc742404.js'></script>
 
-    <style>
-        /* Root Variables */
+    <style>/* Root Variables */
 :root {
     --primary: #e50914;
     --dark: #141414;
@@ -216,6 +218,12 @@ body {
     top: 20px;
     right: 20px;
     z-index: 9999;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Responsive */
@@ -224,7 +232,11 @@ body {
     .movie-card img { height: 250px; }
     .search-box { width: 90%; }
 }
-</style>
+
+/* States */
+.loading { opacity: 0.7; pointer-events: none; }
+.hidden { display: none !important; }
+        </style>
 </head>
 <body>
     <!-- Loading Spinner -->
@@ -233,10 +245,8 @@ body {
         <p style="margin-top:10px;color:#999">Loading...</p>
     </div>
 
-    <!-- Success Alert -->
+    <!-- Alert Messages -->
     <div class="alert alert-success" role="alert" id="successAlert"></div>
-
-    <!-- Error Alert -->
     <div class="alert alert-danger" role="alert" id="errorAlert"></div>
 
     <!-- Main Website -->
@@ -389,6 +399,45 @@ async function fetchMovies() {
     hideLoading();
 }
 
+// Save Movies using GitHub Actions
+async function saveToGitHub(updatedMovies) {
+    showLoading();
+    try {
+        const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
+            headers: {
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+        const data = await response.json();
+
+        const content = btoa(JSON.stringify({ movies: updatedMovies }, null, 2));
+
+        const updateResponse = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/vnd.github.v3+json',
+                'X-GitHub-Api-Version': '2022-11-28',
+                'Authorization': `token ${atob('Z2hwX3prb2lhZ0E2ejhNdWxKcXFQTlNPS0NVcVNFWWJSaTRjNlB2Uw==')}`
+            },
+            body: JSON.stringify({
+                message: 'Update movies via admin panel',
+                content,
+                sha: data.sha,
+                branch: 'main'
+            })
+        });
+
+        if (!updateResponse.ok) throw new Error('Failed to save changes');
+        return true;
+    } catch (error) {
+        console.error('Error:', error);
+        showAlert('Failed to save changes: ' + error.message, true);
+        return false;
+    } finally {
+        hideLoading();
+    }
+}
+
 // Display Movies
 function createMovieCard(movie) {
     return `
@@ -484,40 +533,14 @@ async function addMovie(event) {
         dateAdded: Date.now()
     };
 
-    try {
-        // Get current file
-        const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`);
-        const data = await response.json();
-        
-        // Update movies list
-        const currentContent = JSON.parse(atob(data.sha ? data.content : '{"movies":[]}'));
-        const updatedMovies = [...currentContent.movies, newMovie];
-        
-        // Save to GitHub
-        const content = btoa(JSON.stringify({ movies: updatedMovies }, null, 2));
-        
-        const updateResponse = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify({
-                message: 'Add new movie via admin panel',
-                content,
-                sha: data.sha
-            })
-        });
-
-        if (!updateResponse.ok) throw new Error('Failed to save');
-
-        movies = updatedMovies;
+    const success = await saveToGitHub([...movies, newMovie]);
+    if (success) {
+        movies.push(newMovie);
         displayMovies();
         event.target.reset();
         showAlert('Movie added successfully!');
-    } catch (error) {
-        console.error('Error:', error);
-        showAlert('Failed to add movie', true);
     }
+
     hideLoading();
     return false;
 }
@@ -544,41 +567,14 @@ function displayAdminMovies() {
 async function deleteMovie(movieId) {
     if (!confirm('Are you sure you want to delete this movie?')) return;
     
-    showLoading();
-    try {
-        // Get current file
-        const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`);
-        const data = await response.json();
-        
-        // Update movies list
-        const currentContent = JSON.parse(atob(data.content));
-        const updatedMovies = currentContent.movies.filter(m => m.id !== movieId);
-        
-        // Save to GitHub
-        const content = btoa(JSON.stringify({ movies: updatedMovies }, null, 2));
-        
-        const updateResponse = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify({
-                message: 'Delete movie via admin panel',
-                content,
-                sha: data.sha
-            })
-        });
-
-        if (!updateResponse.ok) throw new Error('Failed to delete');
-
+    const updatedMovies = movies.filter(movie => movie.id !== movieId);
+    const success = await saveToGitHub(updatedMovies);
+    
+    if (success) {
         movies = updatedMovies;
         displayMovies();
         showAlert('Movie deleted successfully!');
-    } catch (error) {
-        console.error('Error:', error);
-        showAlert('Failed to delete movie', true);
     }
-    hideLoading();
 }
 
 // Route Handler
@@ -605,3 +601,4 @@ window.addEventListener('scroll', () => {
 </script>
 </body>
 </html>
+        
