@@ -21,358 +21,394 @@
 
     <style>
         /* Root Variables */
-:root {
-    --primary: #e50914;
-    --primary-hover: #ff0f1f;
-    --dark: #141414;
-    --darker: #0b0b0b;
-    --card: #1a1a1a;
-    --text: #ffffff;
-    --text-muted: #999999;
-    --admin-text: #e6e6e6;
-    --admin-input-bg: #2a2a2a;
-    --admin-card: #1f1f1f;
-}
+        :root {
+            --primary: #e50914;
+            --primary-hover: #ff0f1f;
+            --dark: #141414;
+            --darker: #0b0b0b;
+            --card: #1a1a1a;
+            --text: #ffffff;
+            --text-muted: #999999;
+            --admin-text: #e6e6e6;
+            --admin-input-bg: #2a2a2a;
+            --admin-card: #1f1f1f;
+        }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--dark);
-    color: var(--text);
-    line-height: 1.6;
-}
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+        }
 
-/* Loading Spinner */
-#loadingSpinner {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.9);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 9999;
-}
+        /* Loading Spinner */
+        #loadingSpinner {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
 
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid transparent;
-    border-top-color: var(--primary);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid transparent;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
 
-/* Navbar */
-.navbar {
-    background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%);
-    padding: 15px 0;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 100;
-    transition: 0.3s;
-}
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            transition: 0.3s;
+        }
 
-.navbar.scrolled {
-    background: rgba(0,0,0,0.95);
-}
+        .navbar.scrolled {
+            background: rgba(0,0,0,0.95);
+        }
 
-.brand-rana { color: var(--primary); }
-.brand-movies { color: var(--text); }
+        .brand-rana { color: var(--primary); }
+        .brand-movies { color: var(--text); }
 
-/* Hero Section */
-.hero {
-    height: 75vh;
-    margin-top: 60px;
-    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
-                url('https://assets.nflxext.com/ffe/siteui/vlv3/f669a8f4-de1e-49d7-bb56-c9bd1f4a9069/d4f217b2-4001-4df5-b363-27a31d9a9b99/US-en-20221031-popsignuptwoweeks-perspective_alpha_website_large.jpg') center/cover;
-    display: flex;
-    align-items: center;
-    text-align: center;
-}
+        /* Admin Access Button */
+        .admin-access {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
 
-/* Search Box */
-.search-box {
-    max-width: 600px;
-    margin: 20px auto;
-    display: flex;
-}
+        .admin-access:hover {
+            transform: scale(1.1);
+            background: var(--primary-hover);
+        }
 
-.search-box input {
-    flex: 1;
-    padding: 15px 25px;
-    border: none;
-    border-radius: 25px 0 0 25px;
-    font-size: 16px;
-    background: rgba(255,255,255,0.9);
-}
+        /* Hero Section */
+        .hero {
+            height: 75vh;
+            margin-top: 60px;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                        url('https://assets.nflxext.com/ffe/siteui/vlv3/f669a8f4-de1e-49d7-bb56-c9bd1f4a9069/d4f217b2-4001-4df5-b363-27a31d9a9b99/US-en-20221031-popsignuptwoweeks-perspective_alpha_website_large.jpg') center/cover;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
 
-.search-box button {
-    padding: 15px 25px;
-    border: none;
-    background: linear-gradient(45deg, var(--primary), var(--primary-hover));
-    color: var(--text);
-    border-radius: 0 25px 25px 0;
-    cursor: pointer;
-    transition: 0.3s;
-}
+        /* Search Box */
+        .search-box {
+            max-width: 600px;
+            margin: 20px auto;
+            display: flex;
+        }
 
-/* Movie Cards */
-.movie-card {
-    background: var(--card);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.2s;
-    height: 100%;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
+        .search-box input {
+            flex: 1;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 25px 0 0 25px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+        }
 
-.movie-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
-}
+        .search-box button {
+            padding: 15px 25px;
+            border: none;
+            background: linear-gradient(45deg, var(--primary), var(--primary-hover));
+            color: var(--text);
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-.movie-card img {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
-    transition: transform 0.3s;
-}
+        .search-box button:hover {
+            opacity: 0.9;
+        }
 
-.movie-card:hover img {
-    transform: scale(1.05);
-}
+        /* Movie Cards */
+        .movie-card {
+            background: var(--card);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.2s;
+            height: 100%;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
 
-.movie-info {
-    padding: 20px;
-}
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
+        }
 
-.movie-title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: var(--text);
-}
+        .movie-thumbnail {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+        }
 
-.movie-meta {
-    color: var(--text-muted);
-    font-size: 14px;
-    margin-bottom: 15px;
-    line-height: 1.4;
-}
+        .movie-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
 
-.watch-btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background: linear-gradient(45deg, var(--primary), var(--primary-hover));
-    color: var(--text);
-    text-align: center;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: 0.2s;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-}
+        .movie-card:hover img {
+            transform: scale(1.05);
+        }
 
-.watch-btn:hover {
-    color: var(--text);
-    opacity: 0.9;
-    transform: scale(1.02);
-}
+        .error-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            text-align: center;
+            padding: 10px;
+        }
 
-/* Admin Panel - Improved Styles */
-.admin-section {
-    min-height: 100vh;
-    padding: 30px 20px;
-    background: var(--darker);
-}
+        .movie-info {
+            padding: 20px;
+        }
 
-.admin-box {
-    background: var(--admin-card);
-    padding: 30px;
-    border-radius: 15px;
-    max-width: 600px;
-    margin: 40px auto;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-}
+        .movie-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
 
-.admin-box h3 {
-    color: var(--primary);
-    font-size: 24px;
-    margin-bottom: 25px;
-    text-align: center;
-}
+        .movie-meta {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
 
-.admin-box label {
-    color: var(--admin-text);
-    font-size: 14px;
-    margin-bottom: 8px;
-    display: block;
-}
+        .watch-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, var(--primary), var(--primary-hover));
+            color: var(--text);
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: 0.2s;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
 
-.form-control {
-    background: var(--admin-input-bg) !important;
-    border: 1px solid #333 !important;
-    color: var(--admin-text) !important;
-    padding: 12px 15px !important;
-    font-size: 15px !important;
-}
+        .watch-btn:hover {
+            color: var(--text);
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
 
-.form-control:focus {
-    box-shadow: none !important;
-    border-color: var(--primary) !important;
-    background: var(--admin-input-bg) !important;
-}
+        /* Admin Panel - Improved Styles */
+        .admin-section {
+            min-height: 100vh;
+            padding: 30px 20px;
+            background: var(--darker);
+        }
 
-.admin-btn {
-    background: var(--primary);
-    color: var(--text);
-    border: none;
-    padding: 12px 25px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-    font-weight: 500;
-    width: 100%;
-}
+        .admin-box {
+            background: var(--admin-card);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            margin: 40px auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
 
-.admin-btn:hover {
-    background: var(--primary-hover);
-    transform: translateY(-2px);
-}
+        .admin-box h3 {
+            color: var(--primary);
+            font-size: 24px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
 
-/* Movie List in Admin */
-.movie-list-item {
-    background: var(--admin-input-bg);
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .admin-box label {
+            color: var(--admin-text);
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: block;
+        }
 
-.movie-list-item .title {
-    color: var(--admin-text);
-    font-size: 16px;
-    font-weight: 500;
-}
+        .form-control {
+            background: var(--admin-input-bg) !important;
+            border: 1px solid #333 !important;
+            color: var(--admin-text) !important;
+            padding: 12px 15px !important;
+            font-size: 15px !important;
+        }
 
-.movie-list-item .meta {
-    color: var(--text-muted);
-    font-size: 14px;
-}
+        .form-control:focus {
+            box-shadow: none !important;
+            border-color: var(--primary) !important;
+            background: var(--admin-input-bg) !important;
+        }
 
-/* Ad Containers */
-.ad-container {
-    max-width: 728px;
-    margin: 20px auto;
-    min-height: 90px;
-    background: rgba(0,0,0,0.2);
-    border-radius: 5px;
-    overflow: hidden;
-    text-align: center;
-}
+        .admin-btn {
+            background: var(--primary);
+            color: var(--text);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+            width: 100%;
+        }
 
-/* Messages */
-.alert {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    padding: 15px 25px;
-    border-radius: 8px;
-    animation: slideIn 0.3s ease;
-    display: none;
-}
+        .admin-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
 
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
+        /* Movie List in Admin */
+        .movie-list-item {
+            background: var(--admin-input-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-/* URL Preview */
-.url-preview {
-    margin-top: 10px;
-    border-radius: 5px;
-    overflow: hidden;
-    display: none;
-}
+        .movie-list-item .title {
+            color: var(--admin-text);
+            font-size: 16px;
+            font-weight: 500;
+        }
 
-.url-preview img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-}
+        .movie-list-item .meta {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .hero { height: 60vh; }
-    .movie-card img { height: 250px; }
-    .search-box { width: 90%; }
-    .admin-box { padding: 20px; margin: 20px; }
-    
-    /* Improved mobile responsiveness */
-    .search-box input {
-        padding: 12px 20px;
-    }
-    
-    .search-box button {
-        padding: 12px 20px;
-    }
-    
-    .movie-title {
-        font-size: 16px;
-    }
-    
-    .movie-meta {
-        font-size: 13px;
-    }
-    
-    .watch-btn {
-        padding: 10px;
-        font-size: 14px;
-    }
-}
+        /* Ad Containers */
+        .ad-container {
+            max-width: 728px;
+            margin: 20px auto;
+            min-height: 90px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 5px;
+            overflow: hidden;
+            text-align: center;
+        }
 
-/* Loading States */
-.loading { opacity: 0.7; pointer-events: none; }
-.hidden { display: none !important; }
+        /* Messages */
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            padding: 15px 25px;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
 
-/* Error states for images */
-.movie-thumbnail {
-    position: relative;
-    overflow: hidden;
-}
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
 
-.movie-thumbnail .error-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 14px;
-    text-align: center;
-    padding: 10px;
-}
+        /* URL Preview */
+        .url-preview {
+            margin-top: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .url-preview img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero { height: 60vh; }
+            .movie-thumbnail { height: 250px; }
+            .search-box { width: 90%; }
+            .admin-box { padding: 20px; margin: 20px; }
+            
+            /* Improved mobile responsiveness */
+            .search-box input {
+                padding: 12px 20px;
+            }
+            
+            .search-box button {
+                padding: 12px 20px;
+            }
+            
+            .movie-title {
+                font-size: 16px;
+            }
+            
+            .movie-meta {
+                font-size: 13px;
+            }
+            
+            .watch-btn {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            .admin-access {
+                bottom: 70px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        /* Loading States */
+        .loading { opacity: 0.7; pointer-events: none; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -385,6 +421,11 @@ body {
     <!-- Alert Messages -->
     <div class="alert alert-success" role="alert" id="successAlert"></div>
     <div class="alert alert-danger" role="alert" id="errorAlert"></div>
+
+    <!-- Admin Access Button -->
+    <div class="admin-access" title="Admin Access" onclick="toggleAdmin()">
+        <i class="fas fa-lock"></i>
+    </div>
 
     <!-- Main Website -->
     <div id="mainSection">
@@ -417,7 +458,11 @@ body {
         <!-- Latest Movies -->
         <section class="container py-5">
             <h2 class="h4 mb-4">Latest Added</h2>
-            <div class="row" id="latestGrid"></div>
+            <div class="row" id="latestGrid">
+                <div class="col-12 text-center">
+                    <p class="text-muted">Loading movies...</p>
+                </div>
+            </div>
         </section>
 
         <!-- Middle Ad -->
@@ -428,7 +473,11 @@ body {
         <!-- All Movies -->
         <section class="container py-5">
             <h2 class="h4 mb-4">All Movies</h2>
-            <div class="row" id="moviesGrid"></div>
+            <div class="row" id="moviesGrid">
+                <div class="col-12 text-center">
+                    <p class="text-muted">Loading movies...</p>
+                </div>
+            </div>
         </section>
     </div>
 
@@ -490,7 +539,9 @@ body {
 
                 <hr class="my-4">
                 <h3>Manage Movies</h3>
-                <div id="moviesList" class="mt-3"></div>
+                <div id="moviesList" class="mt-3">
+                    <p class="text-muted">No movies available</p>
+                </div>
             </div>
         </div>
     </div>
@@ -498,285 +549,335 @@ body {
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-// Configuration
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTTnc7FSp4gNwKdSYrPfJt99-Va62_Yj2e5AgOuhUX5RUuEg0vrLrVtHJ6FQDebZeTHx0zaXF1KHTbO/pub?gid=0&single=true&output=csv';
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx6SDnLAU5Fssh6mgAjZuv9FXZPKhyOGEcr39Ckr3NLyyOb_v-QKoRi2Ym2WVJOcH6s/exec';
+        // Configuration
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTTnc7FSp4gNwKdSYrPfJt99-Va62_Yj2e5AgOuhUX5RUuEg0vrLrVtHJ6FQDebZeTHx0zaXF1KHTbO/pub?gid=0&single=true&output=csv';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx6SDnLAU5Fssh6mgAjZuv9FXZPKhyOGEcr39Ckr3NLyyOb_v-QKoRi2Ym2WVJOcH6s/exec';
 
-const ADMIN = {
-    username: 'Jello',
-    password: 'AliHaider5128@.com'
-};
+        const ADMIN = {
+            username: 'Jello',
+            password: 'AliHaider5128@.com'
+        };
 
-// State
-let movies = [];
+        // State
+        let movies = [];
 
-// Show/Hide Loading
-function showLoading() {
-    document.getElementById('loadingSpinner').style.display = 'flex';
-}
+        // Show/Hide Loading
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+        }
 
-function hideLoading() {
-    document.getElementById('loadingSpinner').style.display = 'none';
-}
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
 
-// Show Alert Message
-function showAlert(message, isError = false) {
-    const alert = document.getElementById(isError ? 'errorAlert' : 'successAlert');
-    alert.textContent = message;
-    alert.className = `alert ${isError ? 'alert-danger' : 'alert-success'}`;
-    alert.style.display = 'block';
-    setTimeout(() => alert.style.display = 'none', 3000);
-}
+        // Show Alert Message
+        function showAlert(message, isError = false) {
+            const alert = document.getElementById(isError ? 'errorAlert' : 'successAlert');
+            alert.textContent = message;
+            alert.className = `alert ${isError ? 'alert-danger' : 'alert-success'}`;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 3000);
+        }
 
-// Preview Thumbnail
-function previewThumbnail() {
-    const url = document.getElementById('thumbnailUrl').value;
-    const preview = document.getElementById('thumbnailPreview');
-    
-    if (url) {
-        preview.innerHTML = `<img src="${url}" onerror="this.parentElement.style.display='none'" onload="this.parentElement.style.display='block'">`;
-    } else {
-        preview.style.display = 'none';
-    }
-}
+        // Toggle Admin Section
+        function toggleAdmin() {
+            window.location.hash = window.location.hash === '#admin' ? '' : '#admin';
+            checkRoute();
+        }
 
-// Fetch Movies from Google Sheet
-async function fetchMovies() {
-    showLoading();
-    try {
-        const response = await fetch(SHEET_URL);
-        const csv = await response.text();
-        movies = parseCSV(csv);
-        displayMovies();
-    } catch (error) {
-        console.error('Error:', error);
-        showAlert('Failed to load movies', true);
-    }
-    hideLoading();
-}
+        // Preview Thumbnail
+        function previewThumbnail() {
+            const url = document.getElementById('thumbnailUrl').value;
+            const preview = document.getElementById('thumbnailPreview');
+            
+            if (url) {
+                preview.innerHTML = `<img src="${url}" onerror="this.parentElement.style.display='none'" onload="this.parentElement.style.display='block'">`;
+            } else {
+                preview.style.display = 'none';
+            }
+        }
 
-// Parse CSV Data
-function parseCSV(csv) {
-    const lines = csv.split('\n');
-    const headers = lines[0].split(',');
-    return lines.slice(1).filter(line => line.trim()).map(line => {
-        const values = line.split(',');
-        const movie = {};
-        headers.forEach((header, i) => {
-            movie[header.trim()] = values[i]?.trim() || '';
-        });
-        return movie;
-    });
-}
+        // Fetch Movies from Google Sheet
+        async function fetchMovies() {
+            showLoading();
+            try {
+                const response = await fetch(SHEET_URL);
+                if (!response.ok) throw new Error('Failed to fetch movies');
+                
+                const csv = await response.text();
+                movies = parseCSV(csv);
+                
+                if (movies.length === 0) {
+                    throw new Error('No movies found in the database');
+                }
+                
+                displayMovies();
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Failed to load movies: ' + error.message, true);
+                
+                // Show error state in UI
+                document.getElementById('moviesGrid').innerHTML = `
+                    <div class="col-12 text-center">
+                        <div class="text-danger mb-2">
+                            <i class="fas fa-exclamation-circle fa-2x"></i>
+                        </div>
+                        <p class="text-muted">Failed to load movies. Please try again later.</p>
+                        <button class="btn btn-primary mt-2" onclick="fetchMovies()">Retry</button>
+                    </div>
+                `;
+                
+                document.getElementById('latestGrid').innerHTML = `
+                    <div class="col-12 text-center">
+                        <p class="text-muted">Failed to load latest movies</p>
+                    </div>
+                `;
+            }
+            hideLoading();
+        }
 
-// Add Movie to Google Sheet
-async function addMovie(event) {
-    event.preventDefault();
-    showLoading();
+        // Parse CSV Data
+        function parseCSV(csv) {
+            const lines = csv.split('\n').filter(line => line.trim());
+            if (lines.length < 2) return [];
+            
+            const headers = lines[0].split(',').map(header => header.trim());
+            return lines.slice(1).filter(line => line.trim()).map(line => {
+                const values = line.split(',');
+                const movie = {};
+                headers.forEach((header, i) => {
+                    movie[header] = values[i]?.trim() || '';
+                });
+                return movie;
+            });
+        }
 
-    const newMovie = {
-        ID: Date.now(),
-        Title: document.getElementById('movieTitle').value,
-        'Thumbnail URL': document.getElementById('thumbnailUrl').value,
-        'Movie URL': document.getElementById('movieUrl').value,
-        Genre: document.getElementById('movieGenre').value,
-        Year: document.getElementById('movieYear').value,
-        Description: document.getElementById('movieDescription').value,
-        'Date Added': new Date().toISOString()
-    };
+        // Add Movie to Google Sheet
+        async function addMovie(event) {
+            event.preventDefault();
+            showLoading();
 
-    try {
-        const response = await fetch(SCRIPT_URL, {
-            method: 'POST',
-            body: JSON.stringify(newMovie)
-        });
+            const newMovie = {
+                ID: Date.now(),
+                Title: document.getElementById('movieTitle').value,
+                'Thumbnail URL': document.getElementById('thumbnailUrl').value,
+                'Movie URL': document.getElementById('movieUrl').value,
+                Genre: document.getElementById('movieGenre').value,
+                Year: document.getElementById('movieYear').value,
+                Description: document.getElementById('movieDescription').value,
+                'Date Added': new Date().toISOString()
+            };
 
-        if (!response.ok) throw new Error('Failed to add movie');
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(newMovie)
+                });
 
-        document.getElementById('addMovieForm').reset();
-        document.getElementById('thumbnailPreview').style.display = 'none';
-        showAlert('Movie added successfully!');
-        await fetchMovies();
-    } catch (error) {
-        console.error('Error:', error);
-        showAlert('Failed to add movie: ' + error.message, true);
-    }
+                if (!response.ok) throw new Error('Failed to add movie');
 
-    hideLoading();
-    return false;
-}
+                document.getElementById('addMovieForm').reset();
+                document.getElementById('thumbnailPreview').style.display = 'none';
+                showAlert('Movie added successfully!');
+                await fetchMovies();
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Failed to add movie: ' + error.message, true);
+            }
 
-// Display Movies
-function createMovieCard(movie) {
-    // Fix thumbnail URL handling
-    let thumbnailUrl = movie['Thumbnail URL'] || '';
-    // Fix movie URL handling
-    let movieUrl = movie['Movie URL'] || '';
-    
-    // Ensure URLs have proper protocol
-    if (movieUrl && !movieUrl.startsWith('http')) {
-        movieUrl = 'https://' + movieUrl;
-    }
-    
-    return `
-        <div class="col-lg-3 col-md-4 col-sm-6">
-            <div class="movie-card">
-                <div class="movie-thumbnail">
-                    <img src="${thumbnailUrl}" alt="${movie.Title}" loading="lazy" 
-                         onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="error-overlay" style="display: none;">
-                        <div>Thumbnail not available</div>
+            hideLoading();
+            return false;
+        }
+
+        // Display Movies
+        function createMovieCard(movie) {
+            // Fix thumbnail URL handling
+            let thumbnailUrl = movie['Thumbnail URL'] || '';
+            // Fix movie URL handling
+            let movieUrl = movie['Movie URL'] || '';
+            
+            // Ensure URLs have proper protocol
+            if (movieUrl && !movieUrl.startsWith('http')) {
+                movieUrl = 'https://' + movieUrl;
+            }
+            
+            return `
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="movie-card">
+                        <div class="movie-thumbnail">
+                            <img src="${thumbnailUrl}" alt="${movie.Title}" loading="lazy" 
+                                 onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="error-overlay" style="display: none;">
+                                <div>Thumbnail not available</div>
+                            </div>
+                        </div>
+                        <div class="movie-info">
+                            <h3 class="movie-title">${movie.Title}</h3>
+                            <div class="movie-meta">
+                                <span>${movie.Year}</span> • 
+                                <span>${movie.Genre}</span>
+                            </div>
+                            <p class="movie-meta">${movie.Description?.substring(0, 100)}...</p>
+                            <a href="${movieUrl}" target="_blank" rel="noopener" class="watch-btn">
+                                <i class="fas fa-play"></i> Watch Now
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div class="movie-info">
-                    <h3 class="movie-title">${movie.Title}</h3>
-                    <div class="movie-meta">
-                        <span>${movie.Year}</span> • 
-                        <span>${movie.Genre}</span>
+            `;
+        }
+
+        function displayMovies() {
+            const moviesGrid = document.getElementById('moviesGrid');
+            const latestGrid = document.getElementById('latestGrid');
+            
+            if (!movies.length) {
+                const noMoviesMsg = '<div class="col-12 text-center text-muted">No movies available</div>';
+                moviesGrid.innerHTML = noMoviesMsg;
+                latestGrid.innerHTML = noMoviesMsg;
+                return;
+            }
+
+            // Sort by date for latest
+            const sortedMovies = [...movies].sort((a, b) => 
+                new Date(b['Date Added']) - new Date(a['Date Added'])
+            );
+            
+            moviesGrid.innerHTML = movies.map(createMovieCard).join('');
+            latestGrid.innerHTML = sortedMovies.slice(0, 4).map(createMovieCard).join('');
+            
+            if (document.getElementById('dashboard').style.display === 'block') {
+                displayAdminMovies();
+            }
+        }
+
+        // Search functionality
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchButton = document.getElementById('searchButton');
+            
+            // Search on input
+            searchInput.addEventListener('input', performSearch);
+            
+            // Also search on button click
+            searchButton.addEventListener('click', performSearch);
+            
+            function performSearch() {
+                const searchTerm = searchInput.value.toLowerCase();
+                if (!searchTerm) {
+                    displayMovies();
+                    return;
+                }
+                
+                const filtered = movies.filter(movie => 
+                    movie.Title.toLowerCase().includes(searchTerm) ||
+                    (movie.Genre && movie.Genre.toLowerCase().includes(searchTerm)) ||
+                    (movie.Description && movie.Description.toLowerCase().includes(searchTerm))
+                );
+                
+                document.getElementById('moviesGrid').innerHTML = 
+                    filtered.length ? filtered.map(createMovieCard).join('') 
+                                  : '<div class="col-12 text-center text-muted">No results found</div>';
+            }
+        }
+
+        // Admin Functions
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === ADMIN.username && password === ADMIN.password) {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                document.getElementById('loginError').textContent = '';
+                displayAdminMovies();
+            } else {
+                document.getElementById('loginError').textContent = 'Invalid credentials';
+                showAlert('Invalid admin credentials', true);
+            }
+        }
+
+        function logout() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            window.location.hash = '';
+            checkRoute();
+        }
+
+        // Display Admin Movies
+        function displayAdminMovies() {
+            const moviesList = document.getElementById('moviesList');
+            
+            if (!movies.length) {
+                moviesList.innerHTML = '<p class="text-muted">No movies available</p>';
+                return;
+            }
+            
+            moviesList.innerHTML = movies.map(movie => `
+                <div class="movie-list-item">
+                    <div>
+                        <div class="title">${movie.Title}</div>
+                        <div class="meta">${movie.Genre} • ${movie.Year}</div>
                     </div>
-                    <p class="movie-meta">${movie.Description?.substring(0, 100)}...</p>
-                    <a href="${movieUrl}" target="_blank" rel="noopener" class="watch-btn">
-                        <i class="fas fa-play"></i> Watch Now
-                    </a>
+                    <button onclick="deleteMovie('${movie.ID}')" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
-            </div>
-        </div>
-    `;
-}
+            `).join('');
+        }
 
-function displayMovies() {
-    const moviesGrid = document.getElementById('moviesGrid');
-    const latestGrid = document.getElementById('latestGrid');
-    
-    if (!movies.length) {
-        const noMoviesMsg = '<div class="col-12 text-center text-muted">No movies available</div>';
-        moviesGrid.innerHTML = noMoviesMsg;
-        latestGrid.innerHTML = noMoviesMsg;
-        return;
-    }
+        // Delete Movie
+        async function deleteMovie(movieId) {
+            if (!confirm('Are you sure you want to delete this movie?')) return;
+            
+            showLoading();
+            try {
+                const response = await fetch(`${SCRIPT_URL}?id=${movieId}`, {
+                    method: 'DELETE'
+                });
 
-    // Sort by date for latest
-    const sortedMovies = [...movies].sort((a, b) => 
-        new Date(b['Date Added']) - new Date(a['Date Added'])
-    );
-    
-    moviesGrid.innerHTML = movies.map(createMovieCard).join('');
-    latestGrid.innerHTML = sortedMovies.slice(0, 4).map(createMovieCard).join('');
-    
-    if (document.getElementById('dashboard').style.display === 'block') {
-        displayAdminMovies();
-    }
-}
+                if (!response.ok) throw new Error('Failed to delete movie');
 
-// Search functionality
-function setupSearch() {
-    const searchInput = document.getElementById('searchInput');
-    const searchButton = document.getElementById('searchButton');
-    
-    // Search on input
-    searchInput.addEventListener('input', performSearch);
-    
-    // Also search on button click
-    searchButton.addEventListener('click', performSearch);
-    
-    function performSearch() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const filtered = movies.filter(movie => 
-            movie.Title.toLowerCase().includes(searchTerm) ||
-            movie.Genre.toLowerCase().includes(searchTerm) ||
-            movie.Description.toLowerCase().includes(searchTerm)
-        );
+                showAlert('Movie deleted successfully!');
+                await fetchMovies();
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Failed to delete movie: ' + error.message, true);
+            }
+            hideLoading();
+        }
+
+        // Route Handler
+        function checkRoute() {
+            const isAdmin = window.location.hash === '#admin';
+            document.getElementById('mainSection').style.display = isAdmin ? 'none' : 'block';
+            document.getElementById('adminSection').style.display = isAdmin ? 'block' : 'none';
+            
+            if (!isAdmin) {
+                fetchMovies();
+                // Setup search after movies are loaded
+                setTimeout(setupSearch, 500);
+            }
+        }
+
+        // Initialize
+        window.addEventListener('load', function() {
+            checkRoute();
+            
+            // Navbar Scroll Effect
+            window.addEventListener('scroll', () => {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        });
         
-        document.getElementById('moviesGrid').innerHTML = 
-            filtered.length ? filtered.map(createMovieCard).join('') 
-                          : '<div class="col-12 text-center text-muted">No results found</div>';
-    }
-}
-
-// Admin Functions
-function login() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    
-    if (username === ADMIN.username && password === ADMIN.password) {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('dashboard').style.display = 'block';
-        document.getElementById('loginError').textContent = '';
-        fetchMovies();
-    } else {
-        document.getElementById('loginError').textContent = 'Invalid credentials';
-    }
-}
-
-function logout() {
-    document.getElementById('loginForm').style.display = 'block';
-    document.getElementById('dashboard').style.display = 'none';
-    window.location.hash = '';
-    checkRoute();
-}
-
-// Display Admin Movies
-function displayAdminMovies() {
-    const moviesList = document.getElementById('moviesList');
-    moviesList.innerHTML = movies.map(movie => `
-        <div class="movie-list-item">
-            <div>
-                <div class="title">${movie.Title}</div>
-                <div class="meta">${movie.Genre} • ${movie.Year}</div>
-            </div>
-            <button onclick="deleteMovie('${movie.ID}')" class="btn btn-danger btn-sm">
-                <i class="fas fa-trash"></i>
-            </button>
-        </div>
-    `).join('');
-}
-
-// Delete Movie
-async function deleteMovie(movieId) {
-    if (!confirm('Are you sure you want to delete this movie?')) return;
-    
-    showLoading();
-    try {
-        const response = await fetch(`${SCRIPT_URL}?id=${movieId}`, {
-            method: 'DELETE'
-        });
-
-        if (!response.ok) throw new Error('Failed to delete movie');
-
-        showAlert('Movie deleted successfully!');
-        await fetchMovies();
-    } catch (error) {
-        console.error('Error:', error);
-        showAlert('Failed to delete movie: ' + error.message, true);
-    }
-    hideLoading();
-}
-
-// Route Handler
-function checkRoute() {
-    const isAdmin = window.location.hash === '#admin';
-    document.getElementById('mainSection').style.display = isAdmin ? 'none' : 'block';
-    document.getElementById('adminSection').style.display = isAdmin ? 'block' : 'none';
-    if (!isAdmin) {
-        fetchMovies();
-        // Setup search after movies are loaded
-        setTimeout(setupSearch, 500);
-    }
-}
-
-// Initialize
-window.addEventListener('load', checkRoute);
-window.addEventListener('hashchange', checkRoute);
-
-// Navbar Scroll Effect
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
-});
-</script>
+        window.addEventListener('hashchange', checkRoute);
+    </script>
 </body>
 </html>
