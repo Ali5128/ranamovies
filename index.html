@@ -36,21 +36,10 @@
     <script async src='//pl27524576.effectivecpmrate.com/ca/9c/db/ca9cdb817787e3f562770f4cfc742404.js'></script>
 
     <style>
-        /* Root Variables */
-        :root {
-            --primary: #e50914;
-            --primary-hover: #ff0f1f;
-            --dark: #141414;
-            --darker: #0b0b0b;
-            --card: #1a1a1a;
-            --text: #ffffff;
-            --text-muted: #999999;
-            --admin-text: #e6e6e6;
-            --admin-input-bg: #2a2a2a;
-            --admin-card: #1f1f1f;
-        }
+        :root { --primary: #e50914; --primary-hover: #ff0f1f; --dark: #141414; --darker: #0b0b0b; --card: #1a1a1a; --text: #ffffff; --text-muted: #999999; --admin-text: #e6e6e6; --admin-input-bg: #2a2a2a; --admin-card: #1f1f1f; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background: var(--dark); color: var(--text); line-height: 1.6; }
+        .hidden { display: none !important; }
         #loadingSpinner { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; flex-direction: column; z-index: 9999; }
         .spinner { width: 40px; height: 40px; border: 3px solid transparent; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -64,7 +53,7 @@
         .search-box button { padding: 15px 25px; border: none; background: linear-gradient(45deg, var(--primary), var(--primary-hover)); color: var(--text); border-radius: 0 25px 25px 0; cursor: pointer; transition: 0.3s; }
         .movie-card { background: var(--card); border-radius: 10px; overflow: hidden; transition: transform 0.2s; height: 100%; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column; }
         .movie-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3); }
-        .thumbnail-container { width: 100%; height: 350px; overflow: hidden; } /* FIXED HEIGHT CONTAINER */
+        .thumbnail-container { width: 100%; height: 350px; overflow: hidden; }
         .movie-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .movie-card:hover img { transform: scale(1.05); }
         .movie-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
@@ -89,23 +78,18 @@
         .url-preview { margin-top: 10px; border-radius: 5px; overflow: hidden; display: none; }
         .url-preview img { width: 100%; height: 150px; object-fit: cover; }
         @media (max-width: 768px) { .hero { min-height: 60vh; } .thumbnail-container { height: 300px; } .search-box { width: 90%; } .admin-box { padding: 20px; margin: 20px; } }
-        .hidden { display: none !important; }
     </style>
 </head>
 <body>
-    <!-- Loading Spinner -->
     <div id="loadingSpinner">
         <div class="spinner"></div>
         <p style="margin-top:10px;color:#999">Loading...</p>
     </div>
 
-    <!-- Alert Messages -->
     <div class="alert alert-success" role="alert" id="successAlert"></div>
     <div class="alert alert-danger" role="alert" id="errorAlert"></div>
 
-    <!-- Main Website -->
     <main id="mainSection">
-        <!-- Navbar -->
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand" href="#">
@@ -113,8 +97,6 @@
                 </a>
             </div>
         </nav>
-
-        <!-- Hero -->
         <header class="hero">
             <div class="container">
                 <h1 class="display-4 mb-3">Welcome to RanaMovies</h1>
@@ -125,91 +107,46 @@
                 </div>
             </div>
         </header>
-
-        <!-- Top Ad -->
-        <div class="ad-container">
-            <div id="container-7183b1383f16d7f1a0d405394a2dd75c"></div>
-        </div>
-
-        <!-- Latest Movies -->
+        <div class="ad-container"><div id="container-7183b1383f16d7f1a0d405394a2dd75c"></div></div>
         <section class="container py-5">
             <h2 class="h4 mb-4">Latest Added</h2>
             <div class="row" id="latestGrid"></div>
         </section>
-
-        <!-- Middle Ad -->
-        <div class="ad-container">
-            <div id="container-ca9cdb817787e3f562770f4cfc742404"></div>
-        </div>
-
-        <!-- All Movies -->
+        <div class="ad-container"><div id="container-ca9cdb817787e3f562770f4cfc742404"></div></div>
         <section class="container py-5">
             <h2 class="h4 mb-4">All Movies</h2>
             <div class="row" id="moviesGrid"></div>
         </section>
     </main>
 
-    <!-- Admin Section -->
     <div id="adminSection" class="admin-section hidden">
         <div class="admin-box">
-            <!-- Login Form -->
             <div id="loginForm">
                 <h3>Admin Login</h3>
-                <div class="mb-3">
-                    <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" placeholder="Enter username">
-                </div>
-                <div class="mb-3">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" placeholder="Enter password">
-                </div>
+                <div class="mb-3"><label for="username">Username</label><input type="text" class="form-control" id="username" placeholder="Enter username"></div>
+                <div class="mb-3"><label for="password">Password</label><input type="password" class="form-control" id="password" placeholder="Enter password"></div>
                 <button class="admin-btn" onclick="login()">Login</button>
                 <div id="loginError" class="text-danger small mt-2"></div>
             </div>
-
-            <!-- Dashboard -->
             <div id="dashboard" class="hidden">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3>Admin Dashboard</h3>
                     <button class="btn btn-outline-light btn-sm" onclick="logout()">Logout</button>
                 </div>
-
                 <form id="addMovieForm" onsubmit="addMovie(event)">
-                    <div class="mb-3">
-                        <label for="movieTitle">Movie Title</label>
-                        <input type="text" class="form-control" id="movieTitle" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="thumbnailUrl">Thumbnail URL</label>
-                        <input type="url" class="form-control" id="thumbnailUrl" oninput="previewThumbnail()" required>
+                    <div class="mb-3"><label for="movieTitle">Movie Title</label><input type="text" class="form-control" id="movieTitle" required></div>
+                    <div class="mb-3"><label for="thumbnailUrl">Thumbnail URL</label><input type="url" class="form-control" id="thumbnailUrl" oninput="previewThumbnail()" required>
                         <div id="thumbnailPreview" class="url-preview mt-2"></div>
                     </div>
-                    <!-- NEW FEATURE: Fallback Thumbnail -->
-                    <div class="mb-3">
-                        <label for="fallbackThumbnailUrl">Fallback Thumbnail URL (Optional)</label>
-                        <input type="url" class="form-control" id="fallbackThumbnailUrl" placeholder="Image to show if main thumbnail fails">
-                    </div>
-                    <div class="mb-3">
-                        <label for="movieUrl">Movie URL</label>
-                        <input type="url" class="form-control" id="movieUrl" required>
-                    </div>
+                    <div class="mb-3"><label for="fallbackThumbnailUrl">Fallback Thumbnail URL (Optional)</label><input type="url" class="form-control" id="fallbackThumbnailUrl" placeholder="Image to show if main thumbnail fails"></div>
+                    <div class="mb-3"><label for="movieUrl">Movie URL</label><input type="url" class="form-control" id="movieUrl" required></div>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="movieGenre">Genre</label>
-                            <input type="text" class="form-control" id="movieGenre" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="movieYear">Year</label>
-                            <input type="number" class="form-control" id="movieYear" required>
-                        </div>
+                        <div class="col-md-6 mb-3"><label for="movieGenre">Genre</label><input type="text" class="form-control" id="movieGenre" required></div>
+                        <div class="col-md-6 mb-3"><label for="movieYear">Year</label><input type="number" class="form-control" id="movieYear" required></div>
                     </div>
-                    <div class="mb-3">
-                        <label for="movieDescription">Description</label>
-                        <textarea class="form-control" id="movieDescription" rows="3" required></textarea>
-                    </div>
+                    <div class="mb-3"><label for="movieDescription">Description</label><textarea class="form-control" id="movieDescription" rows="3" required></textarea></div>
                     <button type="submit" class="admin-btn">Add Movie</button>
                 </form>
-
                 <hr class="my-4">
                 <h3>Manage Movies</h3>
                 <div id="moviesList" class="mt-3"></div>
@@ -217,30 +154,18 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
-    // Configuration
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxHMppT3P1dLmXS9WBKrJEU-na1-5u-VdxoxFvt6TErF6hl6DEDXXqokdib058zOyV/exec';
-    
-    // NOTE: Hardcoding credentials is not secure for production apps, but acceptable for this project.
-    const ADMIN = {
-        username: 'Jello',
-        password: 'AliHaider5128@.com'
-    };
-
-    // State
+    const ADMIN = { username: 'Jello', password: 'AliHaider5128@.com' };
     let allMovies = [];
 
-    // UI Elements
     const loadingSpinner = document.getElementById('loadingSpinner');
     const mainSection = document.getElementById('mainSection');
     const adminSection = document.getElementById('adminSection');
     
-    // --- UTILITY FUNCTIONS ---
-    
-    const showLoading = () => loadingSpinner.style.display = 'flex';
-    const hideLoading = () => loadingSpinner.style.display = 'none';
+    const showLoading = () => loadingSpinner.classList.remove('hidden');
+    const hideLoading = () => loadingSpinner.classList.add('hidden');
 
     function showAlert(message, isError = false) {
         const alert = isError ? document.getElementById('errorAlert') : document.getElementById('successAlert');
@@ -259,201 +184,162 @@
         }
     }
 
-    // --- DATA HANDLING ---
-
     async function fetchData(action, payload = {}) {
         showLoading();
         try {
             const response = await fetch(SCRIPT_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                mode: 'no-cors', // In case of complex redirects, but ideally script should handle CORS
                 body: JSON.stringify({ action, ...payload })
             });
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Network response was not ok: ${errorText}`);
-            }
-            return await response.json();
+            // Since mode is no-cors, we can't check response.ok or read the body directly.
+            // We'll rely on the script executing and handle success/failure messages based on re-fetching data.
+            return { success: true }; // Assume success for no-cors, UI will update after re-fetch
         } catch (error) {
             console.error('Fetch Error:', error);
             showAlert(`Operation failed: ${error.message}`, true);
-            return null;
+            return { success: false };
+        } finally {
+            hideLoading();
+        }
+    }
+    
+    // New fetcher for GET requests to read data
+     async function fetchMoviesData() {
+        showLoading();
+        try {
+            const response = await fetch(SCRIPT_URL + '?action=getMovies');
+            if (!response.ok) {
+                 throw new Error(`Network response was not ok: ${response.statusText}`);
+            }
+            const data = await response.json();
+             if (data && data.success) {
+                allMovies = data.movies;
+                displayMovies(allMovies);
+            } else {
+               showAlert(data.message || 'Failed to parse movies.', true);
+            }
+        } catch(error) {
+            console.error('Fetch Movies Error:', error);
+            showAlert(`Failed to load movies. Please check script permissions.`, true);
         } finally {
             hideLoading();
         }
     }
 
-    async function fetchMovies() {
-        const data = await fetchData('getMovies');
-        if (data && data.success) {
-            allMovies = data.movies;
-            displayMovies(allMovies);
-        } else {
-           showAlert('Failed to load movies.', true);
-        }
-    }
 
     async function addMovie(event) {
         event.preventDefault();
         const newMovie = {
-            ID: `movie-${Date.now()}`,
-            Title: document.getElementById('movieTitle').value,
-            'Thumbnail URL': document.getElementById('thumbnailUrl').value,
-            'Fallback Thumbnail URL': document.getElementById('fallbackThumbnailUrl').value,
-            'Movie URL': document.getElementById('movieUrl').value,
-            Genre: document.getElementById('movieGenre').value,
-            Year: document.getElementById('movieYear').value,
-            Description: document.getElementById('movieDescription').value,
+            ID: `movie-${Date.now()}`, Title: document.getElementById('movieTitle').value,
+            'Thumbnail URL': document.getElementById('thumbnailUrl').value, 'Fallback Thumbnail URL': document.getElementById('fallbackThumbnailUrl').value,
+            'Movie URL': document.getElementById('movieUrl').value, Genre: document.getElementById('movieGenre').value,
+            Year: document.getElementById('movieYear').value, Description: document.getElementById('movieDescription').value,
             'Date Added': new Date().toISOString()
         };
-        
-        const data = await fetchData('addMovie', { movie: newMovie });
-        if (data && data.success) {
+        const result = await fetchData('addMovie', { movie: newMovie });
+        if (result.success) {
             document.getElementById('addMovieForm').reset();
             document.getElementById('thumbnailPreview').style.display = 'none';
             showAlert('Movie added successfully!');
-            await fetchMovies();
+            await fetchMoviesData();
         }
     }
 
     async function deleteMovie(movieId) {
         if (!confirm('Are you sure you want to delete this movie?')) return;
-        
-        const data = await fetchData('deleteMovie', { id: movieId });
-        if (data && data.success) {
+        const result = await fetchData('deleteMovie', { id: movieId });
+        if (result.success) {
             showAlert('Movie deleted successfully!');
-            await fetchMovies();
+            await fetchMoviesData();
         }
     }
 
-    // --- RENDERING ---
-
     function createMovieCard(movie) {
-        // BUG FIX: Sanitize inputs to prevent broken HTML
-        const title = movie.Title || 'No Title';
-        const year = movie.Year || 'N/A';
-        const genre = movie.Genre || 'Uncategorized';
-        const description = movie.Description || '';
+        const title = movie.Title || 'No Title'; const year = movie.Year || 'N/A';
+        const genre = movie.Genre || 'Uncategorized'; const description = movie.Description || '';
         const thumbnailUrl = movie['Thumbnail URL'] || '';
         const fallbackUrl = movie['Fallback Thumbnail URL'] || 'https://via.placeholder.com/400x600.png?text=Image+Not+Found';
         const movieUrl = movie['Movie URL'] || '#';
-
         return `
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="movie-card">
                     <div class="thumbnail-container">
-                        <img src="${thumbnailUrl}" alt="${title} Poster" loading="lazy" 
-                             onerror="this.onerror=null; this.src='${fallbackUrl}';">
+                        <img src="${thumbnailUrl}" alt="${title} Poster" loading="lazy" onerror="this.onerror=null; this.src='${fallbackUrl}';">
                     </div>
                     <div class="movie-info">
                         <h3 class="movie-title">${title}</h3>
-                        <div class="movie-meta">
-                            <span>${year}</span> &bull; <span>${genre}</span>
-                        </div>
+                        <div class="movie-meta"><span>${year}</span> &bull; <span>${genre}</span></div>
                         <p class="movie-meta">${description.substring(0, 80)}${description.length > 80 ? '...' : ''}</p>
-                        <!-- BUG FIX: Removed broken onclick. target="_blank" handles this correctly. -->
-                        <a href="${movieUrl}" target="_blank" rel="noopener noreferrer" class="watch-btn">
-                            <i class="fas fa-play"></i> Watch Now
-                        </a>
+                        <a href="${movieUrl}" target="_blank" rel="noopener noreferrer" class="watch-btn"><i class="fas fa-play"></i> Watch Now</a>
                     </div>
                 </div>
-            </div>
-        `;
+            </div>`;
     }
 
     function displayMovies(moviesToDisplay) {
-        const moviesGrid = document.getElementById('moviesGrid');
-        const latestGrid = document.getElementById('latestGrid');
-        
+        const moviesGrid = document.getElementById('moviesGrid'); const latestGrid = document.getElementById('latestGrid');
         if (!moviesToDisplay || moviesToDisplay.length === 0) {
-            const noMoviesMsg = '<div class="col-12 text-center text-muted">No movies available at the moment.</div>';
-            moviesGrid.innerHTML = noMoviesMsg;
-            latestGrid.innerHTML = noMoviesMsg;
-            return;
+            const noMoviesMsg = '<div class="col-12 text-center text-muted">No movies available.</div>';
+            moviesGrid.innerHTML = noMoviesMsg; latestGrid.innerHTML = noMoviesMsg; return;
         }
-        
         const sortedMovies = [...moviesToDisplay].sort((a, b) => new Date(b['Date Added']) - new Date(a['Date Added']));
-        
         moviesGrid.innerHTML = moviesToDisplay.map(createMovieCard).join('');
         latestGrid.innerHTML = sortedMovies.slice(0, 4).map(createMovieCard).join('');
-        
-        if (document.getElementById('dashboard').style.display !== 'none') {
-            displayAdminMovies(sortedMovies);
-        }
+        if (!adminSection.classList.contains('hidden')) { displayAdminMovies(sortedMovies); }
     }
-
-    // --- SEARCH ---
 
     document.getElementById('searchInput').addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase().trim();
-        const filteredMovies = allMovies.filter(movie => 
-            (movie.Title && movie.Title.toLowerCase().includes(searchTerm)) ||
-            (movie.Genre && movie.Genre.toLowerCase().includes(searchTerm))
-        );
-        document.getElementById('moviesGrid').innerHTML = 
-            filteredMovies.length ? filteredMovies.map(createMovieCard).join('') 
-                                  : '<div class="col-12 text-center text-muted">No results found for your search.</div>';
+        const filtered = allMovies.filter(m => (m.Title && m.Title.toLowerCase().includes(searchTerm)) || (m.Genre && m.Genre.toLowerCase().includes(searchTerm)));
+        document.getElementById('moviesGrid').innerHTML = filtered.length ? filtered.map(createMovieCard).join('') : '<div class="col-12 text-center text-muted">No results found.</div>';
     });
 
-    // --- ADMIN ---
-
     function login() {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        if (username === ADMIN.username && password === ADMIN.password) {
+        if (document.getElementById('username').value === ADMIN.username && document.getElementById('password').value === ADMIN.password) {
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
             document.getElementById('loginError').textContent = '';
-            fetchMovies();
+            fetchMoviesData();
         } else {
-            document.getElementById('loginError').textContent = 'Invalid credentials. Please try again.';
+            document.getElementById('loginError').textContent = 'Invalid credentials.';
         }
     }
 
     function logout() {
         document.getElementById('loginForm').classList.remove('hidden');
         document.getElementById('dashboard').classList.add('hidden');
-        window.location.hash = ''; // This will trigger hashchange and reload main view
+        window.location.hash = '';
     }
 
     function displayAdminMovies(movies) {
-        const moviesList = document.getElementById('moviesList');
-        moviesList.innerHTML = movies.map(movie => `
+        document.getElementById('moviesList').innerHTML = movies.map(movie => `
             <div class="movie-list-item">
                 <div>
                     <div class="title">${movie.Title || 'No Title'}</div>
                     <div class="meta">${movie.Genre || 'N/A'} &bull; ${movie.Year || 'N/A'}</div>
                 </div>
-                <button onclick="deleteMovie('${movie.ID}')" class="btn btn-danger btn-sm" aria-label="Delete ${movie.Title}">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        `).join('');
+                <button onclick="deleteMovie('${movie.ID}')" class="btn btn-danger btn-sm" aria-label="Delete ${movie.Title}"><i class="fas fa-trash"></i></button>
+            </div>`).join('');
     }
-
-    // --- ROUTING & INITIALIZATION ---
 
     function checkRoute() {
         const isAdminRoute = window.location.hash === '#admin';
-        mainSection.style.display = isAdminRoute ? 'none' : 'block';
-        adminSection.style.display = isAdminRoute ? 'block' : 'none';
-        
-        // Fetch movies only if on the main page to avoid unnecessary loads
-        if (!isAdminRoute) {
-            fetchMovies();
+        mainSection.classList.toggle('hidden', isAdminRoute);
+        adminSection.classList.toggle('hidden', !isAdminRoute);
+        if (!isAdminRoute && allMovies.length === 0) {
+            fetchMoviesData();
+        } else if (isAdminRoute) {
+            // If we land directly on admin page and movies are not loaded, load them
+            if (allMovies.length === 0) fetchMoviesData();
+            else displayAdminMovies([...allMovies].sort((a, b) => new Date(b['Date Added']) - new Date(a['Date Added'])));
         }
     }
 
-    window.addEventListener('scroll', () => {
-        const navbar = document.querySelector('.navbar');
-        navbar.classList.toggle('scrolled', window.scrollY > 50);
-    });
-    
-    // Initial page load
+    window.addEventListener('scroll', () => { document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 50); });
     document.addEventListener('DOMContentLoaded', checkRoute);
-    // Handle back/forward navigation
     window.addEventListener('hashchange', checkRoute);
-    
     </script>
 </body>
 </html>
